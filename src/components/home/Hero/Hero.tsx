@@ -17,8 +17,10 @@ const Hero = () => {
                 <h1 className="hero_title">
                     WHAT IF
                     <br />
-                    you chose{' '}
-                    <span>differently?</span>
+                    <span className="hero_title_second_line">
+                        <span className="hero_title_phrase">you chose</span>{' '}
+                        <span className="hero_title_emphasis">differently?</span>
+                    </span>
                 </h1>
 
                 <p className="hero_description">
