@@ -1,5 +1,6 @@
 // import RadarChart from './RadarChart';
 // import RankingItem from './RankingItem';
+import './DecisionPreview.css';
 /*
 interface Ranking {
     rank: number;
