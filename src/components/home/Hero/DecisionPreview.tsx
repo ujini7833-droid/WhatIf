@@ -1,4 +1,4 @@
-// import RadarChart from './RadarChart';
+import RadarChart from './RadarChart';
 // import RankingItem from './RankingItem';
 import './DecisionPreview.css';
 /*
@@ -18,9 +18,9 @@ const rankings: Ranking[] = [
 const DecisionPreview = () => {
     return (
         <div className="decision-preview">
-            {/* <div className="decision-preview-chart">
+            <div className="decision-preview-chart">
                 <RadarChart />
-            </div> */}
+            </div>
 
             <div className="decision-preview-card">
                 <div className="decision-preview-header">
