@@ -17,15 +17,15 @@ const rankings: Ranking[] = [
 
 const DecisionPreview = () => {
     return (
-        <div className="decision_preview">
-            {/* <div className="decision_preview_chart">
+        <div className="decision-preview">
+            {/* <div className="decision-preview-chart">
                 <RadarChart />
             </div> */}
 
-            <div className="decision_preview_card">
-                <div className="decision_preview_header">
+            <div className="decision-preview-card">
+                <div className="decision-preview-header">
                     <div>
-                        <span className="decision_preview_label">
+                        <span className="decision-preview-label">
                             YOUR DECISION
                         </span>
 
@@ -35,7 +35,7 @@ const DecisionPreview = () => {
                     </div>
 
                     <button
-                        className="decision_preview_more"
+                        className="decision-preview-more"
                         type="button"
                         aria-label="View more"
                     >
@@ -43,7 +43,7 @@ const DecisionPreview = () => {
                     </button>
                 </div>
 
-                {/* <div className="decision_preview_ranking">
+                {/* <div className="decision-preview-ranking">
                     {rankings.map((item) => (
                         <RankingItem
                             key={item.name}
@@ -54,7 +54,7 @@ const DecisionPreview = () => {
                     ))}
                 </div> */}
 
-                <div className="decision_preview_footer">
+                <div className="decision-preview-footer">
                     <span>
                         5개의 기준으로 비교했어요.
                     </span>

@@ -16,7 +16,7 @@
    Background
 ========================= */
 
-.hero_background {
+.hero-background {
     position: absolute;
     inset: 0;
 
@@ -27,7 +27,7 @@
 
 /* 보라색 빛 */
 
-.hero_glow {
+.hero-glow {
     position: absolute;
 
     border-radius: 50%;
@@ -37,7 +37,7 @@
     opacity: 0.5;
 }
 
-.hero_glow--purple {
+.hero-glow-purple {
     width: 600px;
     height: 600px;
 
@@ -47,7 +47,7 @@
     background: rgba(155, 92, 255, 0.18);
 }
 
-.hero_glow--blue {
+.hero-glow-blue {
     width: 500px;
     height: 500px;
 
@@ -62,7 +62,7 @@
    Hero Content
 ========================= */
 
-.hero_content {
+.hero-content {
     position: relative;
     z-index: 2;
     container-type: inline-size;
@@ -77,7 +77,7 @@
 
 /* 작은 상단 문구 */
 
-.hero_eyebrow {
+.hero-eyebrow {
     margin: 0 0 24px;
 
     font-family: 'Pretendard-Medium', sans-serif;
@@ -93,7 +93,7 @@
 
 /* 메인 제목 */
 
-.hero_title {
+.hero-title {
     margin: 0;
 
     font-family: 'Pretendard-Bold', sans-serif;
@@ -106,7 +106,7 @@
     color: #f5f3ff;
 }
 
-.hero_title_emphasis {
+.hero-title-emphasis {
     background: linear-gradient(
         90deg,
         #a86cff 0%,
@@ -123,7 +123,7 @@
 
 /* 설명 */
 
-.hero_description {
+.hero-description {
     margin: 34px 0 0;
 
     font-family: 'Pretendard-Regular', sans-serif;
@@ -141,7 +141,7 @@
    Button
 ========================= */
 
-.hero_button {
+.hero-button {
     display: flex;
     align-items: center;
     gap: 12px;
@@ -174,19 +174,19 @@
         box-shadow 0.2s ease;
 }
 
-.hero_button:hover {
+.hero-button:hover {
     transform: translateY(-2px);
 
     box-shadow:
         0 0 40px rgba(155, 92, 255, 0.45);
 }
 
-.hero_button > span:first-child {
+.hero-button > span:first-child {
     font-size: 20px;
     font-weight: 300;
 }
 
-.hero_arrow {
+.hero-arrow {
     margin-left: 4px;
 
     font-size: 16px;
@@ -194,7 +194,7 @@
     transition: transform 0.2s ease;
 }
 
-.hero_button:hover .hero_arrow {
+.hero-button:hover .hero-arrow {
     transform: translateX(4px);
 }
 
@@ -203,7 +203,7 @@
    Right Visual
 ========================= */
 
-.hero_visual {
+.hero-visual {
     position: relative;
     z-index: 2;
 
@@ -226,15 +226,15 @@
         padding: 100px 6%;
     }
 
-    .hero_content {
+    .hero-content {
         width: 50%;
     }
 
-    .hero_visual {
+    .hero-visual {
         width: 50%;
     }
 
-    .hero_description {
+    .hero-description {
         font-size: 16px;
     }
 }
@@ -255,55 +255,55 @@
         align-items: flex-start;
     }
 
-    .hero_content {
+    .hero-content {
         width: 100%;
     }
 
-    .hero_title {
+    .hero-title {
         max-width: 100%;
         line-height: 1.08;
         letter-spacing: -0.03em;
         text-wrap: balance;
     }
 
-    .hero_description {
+    .hero-description {
         margin-top: 28px;
 
         font-size: 16px;
     }
 
-    .hero_button {
+    .hero-button {
         margin-top: 32px;
     }
 
-    .hero_visual {
+    .hero-visual {
         width: 100%;
 
         margin-top: 70px;
     }
 
-    .hero_scroll {
+    .hero-scroll {
         display: none;
     }
 }
 
 @media (max-width: 480px) {
-    .hero_title_phrase,
-    .hero_title_emphasis {
+    .hero-title-phrase,
+    .hero-title-emphasis {
         display: inline-block;
     }
 
-    .hero_title_phrase {
+    .hero-title-phrase {
         transform: translateY(-0.06em);
     }
 
-    .hero_title_emphasis {
+    .hero-title-emphasis {
         transform: translateY(0.08em);
     }
 }
 
 @container (min-width: 440px) {
-    .hero_title_second_line {
+    .hero-title-second-line {
         white-space: nowrap;
     }
 }

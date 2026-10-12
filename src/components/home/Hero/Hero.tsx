@@ -4,39 +4,39 @@ import './Hero.css';
 const Hero = () => {
     return (
         <section className="hero">
-            <div className="hero_background">
-                <div className="hero_glow hero_glow--purple" />
-                <div className="hero_glow hero_glow--blue" />
+            <div className="hero-background">
+                <div className="hero-glow hero-glow-purple" />
+                <div className="hero-glow hero-glow-blue" />
             </div>
 
-            <div className="hero_content">
-                <p className="hero_eyebrow">
+            <div className="hero-content">
+                <p className="hero-eyebrow">
                     MAKE A BETTER DECISION
                 </p>
 
-                <h1 className="hero_title">
+                <h1 className="hero-title">
                     WHAT IF
                     <br />
-                    <span className="hero_title_second_line">
-                        <span className="hero_title_phrase">you chose</span>{' '}
-                        <span className="hero_title_emphasis">differently?</span>
+                    <span className="hero-title-second-line">
+                        <span className="hero-title-phrase">you chose</span>{' '}
+                        <span className="hero-title-emphasis">differently?</span>
                     </span>
                 </h1>
 
-                <p className="hero_description">
+                <p className="hero-description">
                     복잡한 선택을
                     <br />
                     나만의 기준으로 비교해보세요
                 </p>
 
-                <button className="hero_button">
+                <button className="hero-button">
                     <span>+</span>
                     새로운 선택 만들기
-                    <span className="hero_arrow">→</span>
+                    <span className="hero-arrow">→</span>
                 </button>
             </div>
 
-            <div className="hero_visual">
+            <div className="hero-visual">
                 {/* <DecisionPreview /> */}
             </div>
         </section>
