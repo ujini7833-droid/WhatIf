@@ -1,5 +1,5 @@
 import { PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, RadarChart as RechartsRadarChart, ResponsiveContainer } from "recharts";
-import './DecisionPreview.css';
+import './RadarChart.css';
 
 const data = [
     {

@@ -18,7 +18,7 @@ const RankingItem = ({
         <div className="ranking-item">
 
             <span className={
-                `ranking-item-rank ${rank === 1 ? 'ranking-item-rank--first' : ''}`
+                `ranking-item-rank ${rank === 1 ? 'ranking-item-rank-first' : ''}`
             }>
                 {rank}
             </span>
