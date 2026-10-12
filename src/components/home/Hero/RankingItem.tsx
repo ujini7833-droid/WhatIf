@@ -1,3 +1,5 @@
+import './RankingItem.css';
+
 interface RankingItemProps {
     rank: number;
     name: string;
