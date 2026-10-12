@@ -1,5 +1,5 @@
 import './Hero.css';
-// import DecisionPreview from './DecisionPreview';
+import DecisionPreview from './DecisionPreview';
 
 const Hero = () => {
     return (
@@ -37,7 +37,7 @@ const Hero = () => {
             </div>
 
             <div className="hero-visual">
-                {/* <DecisionPreview /> */}
+                <DecisionPreview />
             </div>
         </section>
     );

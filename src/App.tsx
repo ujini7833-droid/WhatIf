@@ -1,14 +1,7 @@
-import './App.css'
-import Header from './components/home/Header';
-import Hero from './components/home/Hero/Hero';
+import Home from './pages/Home';
 
-function App() {
-  return (
-    <>
-    <Header />
-    <Hero />
-    </>
-  )
-}
+const App = () => {
+    return <Home />;
+};
 
-export default App
+export default App;

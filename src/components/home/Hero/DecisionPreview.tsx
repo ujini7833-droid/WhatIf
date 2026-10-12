@@ -1,7 +1,7 @@
 import RadarChart from './RadarChart';
-// import RankingItem from './RankingItem';
+import RankingItem from './RankingItem';
 import './DecisionPreview.css';
-/*
+
 interface Ranking {
     rank: number;
     name: string;
@@ -13,7 +13,6 @@ const rankings: Ranking[] = [
     { rank: 2, name: '춘천', score: 4.2 },
     { rank: 3, name: '부산', score: 3.7 },
 ];
-*/
 
 const DecisionPreview = () => {
     return (
@@ -43,7 +42,7 @@ const DecisionPreview = () => {
                     </button>
                 </div>
 
-                {/* <div className="decision-preview-ranking">
+                <div className="decision-preview-ranking">
                     {rankings.map((item) => (
                         <RankingItem
                             key={item.name}
@@ -52,7 +51,7 @@ const DecisionPreview = () => {
                             score={item.score}
                         />
                     ))}
-                </div> */}
+                </div>
 
                 <div className="decision-preview-footer">
                     <span>
