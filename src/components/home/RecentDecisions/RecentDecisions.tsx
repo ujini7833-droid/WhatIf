@@ -1,7 +1,6 @@
 
 import './RecentDecisions.css';
-
-// import DecisionCard from './DecisionCard';
+import DecisionCard from './DecisionCard';
 
 const recentDecisions = [
     {
@@ -25,7 +24,7 @@ const recentDecisions = [
         date: '2026.10.20',
         status: 'completed',
     },
-];
+] as const;
 
 const RecentDecisions = () => {
     return (
@@ -52,7 +51,6 @@ const RecentDecisions = () => {
                     전체 보기 →
                 </button>
             </div>
-            {/*
 
             <div className="recent-decisions-list">
                 {recentDecisions.map((decision) => (
@@ -65,7 +63,6 @@ const RecentDecisions = () => {
                     />
                 ))}
             </div>
-            */}
         </section>
     );
 };

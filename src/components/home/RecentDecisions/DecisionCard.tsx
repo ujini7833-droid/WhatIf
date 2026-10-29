@@ -1,3 +1,4 @@
+import './DecisionCard.css';
 
 interface DecisionCardProps {
     title: string;
