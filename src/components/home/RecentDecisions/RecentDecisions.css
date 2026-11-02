@@ -10,11 +10,11 @@
     align-items: flex-end;
     justify-content: space-between;
     gap: 24px;
-    margin-bottom: 36px;
+    margin-bottom: 40px;
 }
 
 .recent-decisions-eyebrow {
-    margin: 0 0 13px;
+    margin: 0 0 8px;
     font-family: 'Pretendard-Medium', sans-serif;
     color: #a98cff;
     font-size: 12px;
@@ -32,7 +32,7 @@
 }
 
 .recent-decisions-description {
-    margin: 34px 0 0;
+    margin: 28px 0 0;
     font-family: 'Pretendard-Regular', sans-serif;
     color: #8589a3;
     font-size: 16px;
@@ -72,18 +72,16 @@
     }
 }
 
-@media (max-width: 640px) {
-    .recent-decisions {
-        padding: 64px 24px;
-    }
-
+@media (max-width: 768px) {
     .recent-decisions-header {
         align-items: flex-start;
         gap: 12px;
     }
+}
 
-    .recent-decisions-description {
-        font-size: 14px;
+@media (max-width: 640px) {
+    .recent-decisions {
+        padding: 64px 24px;
     }
 
     .recent-decisions-list {

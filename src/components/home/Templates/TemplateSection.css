@@ -1,0 +1,99 @@
+/* 전체 섹션 */
+.template-section {
+    position: relative;
+    padding: 100px 8% 120px;
+    background: #070914;
+    color: #f5f3ff;
+    font-family: 'Pretendard', sans-serif;
+}
+
+/* 헤더 */
+.template-section-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 24px;
+    margin-bottom: 40px;
+}
+
+.template-section-eyebrow {
+    margin: 0 0 8px;
+    font-family: 'Pretendard-Medium', sans-serif;
+    color: #20e0d0;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+}
+
+.template-section-title {
+    margin: 0;
+    color: #f5f3ff;
+    font-family: 'Pretendard-SemiBold', sans-serif;
+    font-size: clamp(28px, 3vw, 38px);
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -0.035em;
+}
+
+.template-section-description {
+    margin: 28px 0 0;
+    font-family: 'Pretendard-Regular', sans-serif;
+    color: #8589a3;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.65;
+}
+
+/* 전체 보기 버튼 */
+.template-section-more {
+    flex-shrink: 0;
+    padding: 10px 0;
+
+    color: #a9adc2;
+    background: none;
+    border: none;
+
+    font-family: inherit;
+    font-size: 13px;
+    cursor: pointer;
+
+    transition: color 0.2s ease;
+}
+
+.template-section-more:hover {
+    color: #20e0d0;
+}
+
+/* 템플릿 카드 목록 */
+.template-section-list {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 20px;
+}
+
+/* 반응형 */
+@media (max-width: 1200px) {
+    .template-section-list {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 768px) {
+    .template-section {
+        padding: 80px 6%;
+    }
+
+    .template-section-header {
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .template-section-description {
+        font-size: 14px;
+    }
+
+    .template-section-list {
+        grid-template-columns: 1fr;
+        gap: 14px;
+    }
+}
