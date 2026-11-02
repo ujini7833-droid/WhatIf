@@ -1,0 +1,95 @@
+/* 전체 섹션 */
+.template-section {
+    position: relative;
+    padding: 100px 8% 120px;
+    background: #070914;
+    color: #f5f3ff;
+    font-family: 'Pretendard', sans-serif;
+}
+
+/* 헤더 */
+.template-section-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 24px;
+    margin-bottom: 40px;
+}
+
+.template-section-eyebrow {
+    margin: 0 0 14px;
+
+    color: #20e0d0;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+}
+
+.template-section-title {
+    margin: 0 0 12px;
+
+    color: #f5f3ff;
+    font-size: clamp(28px, 3vw, 38px);
+    font-weight: 700;
+    letter-spacing: -0.04em;
+}
+
+.template-section-description {
+    margin: 0;
+
+    color: #8589a3;
+    font-size: 15px;
+    line-height: 1.6;
+}
+
+/* 전체 보기 버튼 */
+.template-section-more {
+    flex-shrink: 0;
+    padding: 10px 0;
+
+    color: #a9adc2;
+    background: none;
+    border: none;
+
+    font-family: inherit;
+    font-size: 13px;
+    cursor: pointer;
+
+    transition: color 0.2s ease;
+}
+
+.template-section-more:hover {
+    color: #20e0d0;
+}
+
+/* 템플릿 카드 목록 */
+.template-section-list {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 20px;
+}
+
+/* 반응형 */
+@media (max-width: 1200px) {
+    .template-section-list {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 768px) {
+    .template-section {
+        padding: 80px 6%;
+    }
+
+    .template-section-header {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 16px;
+        margin-bottom: 28px;
+    }
+
+    .template-section-list {
+        grid-template-columns: 1fr;
+        gap: 14px;
+    }
+}
