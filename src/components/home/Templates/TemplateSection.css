@@ -17,29 +17,31 @@
 }
 
 .template-section-eyebrow {
-    margin: 0 0 14px;
-
+    margin: 0 0 8px;
+    font-family: 'Pretendard-Medium', sans-serif;
     color: #20e0d0;
     font-size: 12px;
     font-weight: 600;
-    letter-spacing: 0.12em;
+    letter-spacing: 0.1em;
 }
 
 .template-section-title {
-    margin: 0 0 12px;
-
+    margin: 0;
     color: #f5f3ff;
+    font-family: 'Pretendard-SemiBold', sans-serif;
     font-size: clamp(28px, 3vw, 38px);
     font-weight: 700;
-    letter-spacing: -0.04em;
+    line-height: 1;
+    letter-spacing: -0.035em;
 }
 
 .template-section-description {
-    margin: 0;
-
+    margin: 28px 0 0;
+    font-family: 'Pretendard-Regular', sans-serif;
     color: #8589a3;
-    font-size: 15px;
-    line-height: 1.6;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.65;
 }
 
 /* 전체 보기 버튼 */
@@ -83,9 +85,11 @@
 
     .template-section-header {
         align-items: flex-start;
-        flex-direction: column;
-        gap: 16px;
-        margin-bottom: 28px;
+        gap: 12px;
+    }
+
+    .template-section-description {
+        font-size: 14px;
     }
 
     .template-section-list {
