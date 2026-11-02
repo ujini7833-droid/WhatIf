@@ -1,3 +1,5 @@
+import './TemplateCard.css';
+
 interface TemplateCardProps {
     icon: string;
     title: string;
