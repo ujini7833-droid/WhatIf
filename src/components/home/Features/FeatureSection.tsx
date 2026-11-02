@@ -41,7 +41,6 @@ const FeatureSection = () => {
 
                 <p className="feature-section-description">
                     감에 의존하던 선택을 데이터로 정리하고,
-                    <br />
                     더 나은 결정을 내릴 수 있도록 도와드려요.
                 </p>
             </div>

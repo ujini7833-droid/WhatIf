@@ -2,7 +2,7 @@
     font-family: 'Pretendard-Regular', sans-serif;
     display: flex;
     flex-direction: column;
-    gap: 24px;
+    gap: 25px;
 
     min-height: 220px;
     padding: 28px;
@@ -49,11 +49,11 @@
 .feature-item-content {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 0;
 }
 
 .feature-item-title {
-    margin: 0;
+    margin: 0 0 10px;
 
     color: #f5f3ff;
     font-size: 19px;
@@ -63,10 +63,11 @@
 
 .feature-item-description {
     margin: 0;
-
+    font-family: 'Pretendard-Regular', sans-serif;
+    font-weight: 400;
     color: #8589a3;
     font-size: 14px;
-    line-height: 1.7;
+    line-height: 1.6;
 }
 
 /* 반응형 */
