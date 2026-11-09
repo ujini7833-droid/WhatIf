@@ -3,6 +3,7 @@ import './DecisionInfoStep.css';
 interface DecisionInfoStepProps {
     title: string;
     description: string;
+    showTitleError: boolean;
     onTitleChange: (value: string) => void;
     onDescriptionChange: (value: string) => void;
 }
@@ -10,6 +11,7 @@ interface DecisionInfoStepProps {
 const DecisionInfoStep = ({
     title,
     description,
+    showTitleError,
     onTitleChange,
     onDescriptionChange,
 }: DecisionInfoStepProps) => {
@@ -43,10 +45,17 @@ const DecisionInfoStep = ({
                     onChange={(e) => onTitleChange(e.target.value)}
                     placeholder="예: 11월 여행은 어디로?"
                     maxLength={100}
+                    aria-invalid={showTitleError}
+                    aria-describedby={showTitleError ? 'decision-title-error' : 'decision-title-hint'}
                     />
 
-                    <span className="decision-info-hint">
-                        어떤 선택을 비교할지 간단하게 적어주세요.
+                    <span
+                        id={showTitleError ? 'decision-title-error' : 'decision-title-hint'}
+                        className={`decision-info-hint ${showTitleError ? 'error' : ''}`}
+                    >
+                        {showTitleError
+                            ? '결정 상황을 입력해주세요.'
+                            : '어떤 선택을 비교할지 간단하게 적어주세요.'}
                     </span>
                 </div>
 
@@ -56,7 +65,6 @@ const DecisionInfoStep = ({
                         className="decision-info-label"
                     >
                         결정 상황 설명
-                        <span className="optional">Optional</span>
                     </label>
 
                     <textarea

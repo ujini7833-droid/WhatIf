@@ -28,6 +28,7 @@
 .decision-form-description {
   margin: 12px 0 32px;
   color: #a3a7bd;
+  font-size: 14px;
   line-height: 1.6;
 }
 
@@ -39,7 +40,7 @@
   font-weight: 600;
 }
 
-.decision-form-card textarea {
+.decision-form-card textarea:not(.decision-info-textarea) {
   display: block;
   width: 100%;
   min-height: 132px;
@@ -53,7 +54,7 @@
   border-radius: 12px;
 }
 
-.decision-form-card textarea:focus {
+.decision-form-card textarea:not(.decision-info-textarea):focus {
   outline: 2px solid #8d6bff;
   outline-offset: 2px;
 }
@@ -66,14 +67,14 @@
   display: flex;
   justify-content: space-between;
   gap: 12px;
-  margin-top: 28px;
+  margin-top: 48px;
 }
 
 .decision-form-actions button {
-  min-height: 44px;
-  padding: 0 18px;
+  min-height: 42px;
+  padding: 0 19px;
   color: #f5f3ff;
-  font: inherit;
+  font-size: 14px;
   font-weight: 600;
   cursor: pointer;
   border: 0;

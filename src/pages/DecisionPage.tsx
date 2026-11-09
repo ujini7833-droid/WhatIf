@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import Header from '../components/common/Header/Header';
+import DecisionInfoStep from '../components/decision/DecisionInfoStep';
 import DecisionProgress from '../components/decision/DecisionProgress';
 import './DecisionPage.css';
 
@@ -34,14 +35,30 @@ const stepPrompts = [
 const DecisionPage = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const [answers, setAnswers] = useState<string[]>(Array(stepPrompts.length).fill(''));
+  const [decisionDescription, setDecisionDescription] = useState('');
+  const [showTitleError, setShowTitleError] = useState(false);
   const prompt = stepPrompts[currentStep - 1];
 
   const updateAnswer = (value: string) => {
+    if (value.trim()) {
+      setShowTitleError(false);
+    }
+
     setAnswers((currentAnswers) =>
       currentAnswers.map((answer, index) =>
         index === currentStep - 1 ? value : answer,
       ),
     );
+  };
+
+  const goToNextStep = () => {
+    if (currentStep === 1 && !answers[0].trim()) {
+      setShowTitleError(true);
+      return;
+    }
+
+    setShowTitleError(false);
+    setCurrentStep((step) => Math.min(stepPrompts.length, step + 1));
   };
 
   return (
@@ -51,20 +68,33 @@ const DecisionPage = () => {
         <DecisionProgress currentStep={currentStep} />
 
         <section className="decision-form-card">
-          <p className="decision-form-eyebrow">새로운 결정</p>
-          <h1>{prompt.title}</h1>
-          <p className="decision-form-description">{prompt.description}</p>
+          {currentStep === 1 ? (
+            <DecisionInfoStep
+              title={answers[0]}
+              description={decisionDescription}
+              showTitleError={showTitleError}
+              onTitleChange={updateAnswer}
+              onDescriptionChange={setDecisionDescription}
+            />
+          ) : (
+            <>
+              <p className="decision-form-eyebrow">새로운 결정</p>
+              <h1>{prompt.title}</h1>
+              <p className="decision-form-description">{prompt.description}</p>
 
-          <label className="decision-form-label" htmlFor="decision-answer">
-            내 생각
-          </label>
-          <textarea
-            id="decision-answer"
-            value={answers[currentStep - 1]}
-            onChange={(event) => updateAnswer(event.target.value)}
-            placeholder={prompt.placeholder}
-            rows={4}
-          />
+              <label className="decision-form-label" htmlFor="decision-answer">
+                내 생각
+              </label>
+              <textarea
+                id="decision-answer"
+                value={answers[currentStep - 1]}
+                className="decision-form-textarea"
+                onChange={(event) => updateAnswer(event.target.value)}
+                placeholder={prompt.placeholder}
+                rows={4}
+              />
+            </>
+          )}
 
           <div className="decision-form-actions">
             <button
@@ -78,12 +108,10 @@ const DecisionPage = () => {
             <button
               className="decision-next-button"
               type="button"
-              onClick={() =>
-                setCurrentStep((step) => Math.min(stepPrompts.length, step + 1))
-              }
+              onClick={goToNextStep}
               disabled={currentStep === stepPrompts.length}
             >
-              다음 단계 <span aria-hidden="true">→</span>
+              다음 <span aria-hidden="true">→</span>
             </button>
           </div>
         </section>
