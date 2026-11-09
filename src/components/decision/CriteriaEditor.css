@@ -1,0 +1,27 @@
+.decision-criterion-fields {
+  display: grid;
+  grid-template-columns: 0.8fr 1.2fr;
+  gap: 14px;
+}
+
+.decision-criterion-fields > div {
+  display: grid;
+  gap: 10px;
+}
+
+.decision-criterion-card {
+  background: rgba(155, 92, 255, 0.07);
+  border-color: rgba(155, 92, 255, 0.24);
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.decision-criterion-card:focus-within {
+  background: rgba(155, 92, 255, 0.1);
+  border-color: rgba(155, 92, 255, 0.48);
+}
+
+@media (max-width: 600px) {
+  .decision-criterion-fields {
+    grid-template-columns: 1fr;
+  }
+}
