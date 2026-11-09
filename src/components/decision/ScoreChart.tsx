@@ -8,6 +8,7 @@ import {
   YAxis,
 } from 'recharts';
 import type { Alternative } from './AlternativeStep';
+import './ScoreChart.css';
 
 export interface ResultScore {
   id: string;

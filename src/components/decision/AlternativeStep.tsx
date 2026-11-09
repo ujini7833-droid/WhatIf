@@ -1,3 +1,7 @@
+import './AlternativeStep.css';
+import './DecisionEntry.css';
+import './DecisionInfoStep.css';
+
 export interface Alternative {
   id: string;
   name: string;
@@ -13,7 +17,7 @@ interface AlternativeStepProps {
 
 const AlternativeStep = ({ alternatives, onChange, onAdd, onRemove }: AlternativeStepProps) => (
   <section className="decision-step-content">
-    <p className="decision-form-eyebrow">STEP 02 · ALTERNATIVES</p>
+    <p className="decision-info-eyebrow">STEP 02 · ALTERNATIVES</p>
     <h1>어떤 것들을 비교할까요?</h1>
     <p className="decision-form-description">선택지와 간단한 설명을 적어주세요. 두 개 이상 추가할 수 있어요.</p>
 
@@ -28,19 +32,24 @@ const AlternativeStep = ({ alternatives, onChange, onAdd, onRemove }: Alternativ
               </button>
             )}
           </div>
-          <label className="decision-control-label" htmlFor={`alternative-name-${alternative.id}`}>선택지 이름</label>
+          <label className="decision-info-label" htmlFor={`alternative-name-${alternative.id}`}>
+            선택지 이름 <span className="decision-info-required" aria-hidden="true">*</span>
+          </label>
           <input
             id={`alternative-name-${alternative.id}`}
-            className="decision-control"
+            className="decision-info-input"
             value={alternative.name}
             onChange={(event) => onChange(alternative.id, 'name', event.target.value)}
             placeholder={index === 0 ? '예: 강릉' : index === 1 ? '예: 춘천' : '선택지 이름'}
             maxLength={60}
+            required
           />
-          <label className="decision-control-label" htmlFor={`alternative-description-${alternative.id}`}>설명 <span>선택</span></label>
+          <label className="decision-info-label" htmlFor={`alternative-description-${alternative.id}`}>
+            설명 <span className="decision-info-optional">선택</span>
+          </label>
           <textarea
             id={`alternative-description-${alternative.id}`}
-            className="decision-control decision-control-textarea"
+            className="decision-info-textarea"
             value={alternative.description}
             onChange={(event) => onChange(alternative.id, 'description', event.target.value)}
             placeholder="이 선택지에 대해 간단히 설명해주세요."

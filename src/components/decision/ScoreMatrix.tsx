@@ -1,5 +1,6 @@
 import type { Alternative } from './AlternativeStep';
 import type { Criterion } from './CriteriaEditor';
+import './ScoreMatrix.css';
 
 type ScoreMap = Record<string, Record<string, number>>;
 
@@ -28,14 +29,16 @@ const ScoreMatrix = ({ alternatives, criteria, scores, onChange }: ScoreMatrixPr
             </th>
             {alternatives.map((alternative) => (
               <td key={alternative.id}>
-                <select
-                  className="decision-score-select"
-                  value={scores[criterion.id]?.[alternative.id] ?? 3}
-                  onChange={(event) => onChange(criterion.id, alternative.id, Number(event.target.value))}
-                  aria-label={`${alternative.name}의 ${criterion.name} 점수`}
-                >
-                  {[1, 2, 3, 4, 5].map((score) => <option value={score} key={score}>{score}점</option>)}
-                </select>
+                <span className="decision-score-select-wrap">
+                  <select
+                    className="decision-score-select"
+                    value={scores[criterion.id]?.[alternative.id] ?? 3}
+                    onChange={(event) => onChange(criterion.id, alternative.id, Number(event.target.value))}
+                    aria-label={`${alternative.name}의 ${criterion.name} 점수`}
+                  >
+                    {[1, 2, 3, 4, 5].map((score) => <option value={score} key={score}>{score}점</option>)}
+                  </select>
+                </span>
               </td>
             ))}
           </tr>

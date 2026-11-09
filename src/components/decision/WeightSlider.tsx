@@ -1,4 +1,5 @@
 import type { Criterion } from './CriteriaEditor';
+import './WeightSlider.css';
 
 interface WeightSliderProps {
   criteria: Criterion[];

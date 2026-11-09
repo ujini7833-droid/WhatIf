@@ -55,6 +55,13 @@
   font-family: 'Pretendard-Bold', sans-serif;
 }
 
+.decision-info-optional {
+  color: #8589a3;
+  font-family: 'Pretendard-Regular', sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+}
+
 .decision-info-input,
 .decision-info-textarea {
   width: 100%;

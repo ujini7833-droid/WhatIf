@@ -6,6 +6,7 @@ import DecisionInfoStep from '../components/decision/DecisionInfoStep';
 import DecisionProgress from '../components/decision/DecisionProgress';
 import ScoreMatrix from '../components/decision/ScoreMatrix';
 import WeightSlider from '../components/decision/WeightSlider';
+import './DecisionLayout.css';
 import './DecisionPage.css';
 
 const initialCriteria: Criterion[] = [
@@ -186,7 +187,7 @@ const DecisionPage = () => {
     if (currentStep === 4) {
       return (
         <section className="decision-step-content">
-          <p className="decision-form-eyebrow">STEP 04 · WEIGHTS</p>
+          <p className="decision-info-eyebrow">STEP 04 · WEIGHTS</p>
           <h1>각 기준은 얼마나 중요한가요?</h1>
           <p className="decision-form-description">가중치는 판단의 우선순위를 나타내요. 슬라이더를 움직이면 나머지 기준의 비율을 유지하며 합계가 100%로 맞춰집니다.</p>
           <WeightSlider criteria={criteria} onChange={(id, value) => setCriteria((current) => distributeWeight(current, id, value))} />
@@ -197,7 +198,7 @@ const DecisionPage = () => {
 
     return (
       <section className="decision-step-content">
-        <p className="decision-form-eyebrow">STEP 05 · SCORING</p>
+        <p className="decision-info-eyebrow">STEP 05 · SCORING</p>
         <h1>각 선택지는 기준을 얼마나 만족하나요?</h1>
         <p className="decision-form-description">각 기준에 따라 선택지를 1점부터 5점까지 평가해주세요.</p>
         <ScoreMatrix alternatives={alternatives} criteria={criteria} scores={scores} onChange={updateScore} />

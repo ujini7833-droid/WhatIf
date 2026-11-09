@@ -4,7 +4,10 @@ import type { Alternative } from '../components/decision/AlternativeStep';
 import type { Criterion } from '../components/decision/CriteriaEditor';
 import ScoreChart, { type ResultScore } from '../components/decision/ScoreChart';
 import WeightSlider from '../components/decision/WeightSlider';
-import './DecisionPage.css';
+import '../components/decision/DecisionInfoStep.css';
+import checkIcon from '../assets/check.svg';
+import './DecisionLayout.css';
+import './ResultPage.css';
 
 interface DecisionDraft {
   id: string;
@@ -139,7 +142,7 @@ const ResultPage = () => {
       <Header />
       <main className="decision-page outcome-page">
         <div className="outcome-heading">
-          <p className="decision-form-eyebrow">{view === 'what-if' ? 'WHAT-IF SIMULATION' : view === 'complete' ? 'DECISION COMPLETE' : 'DECISION RESULTS'}</p>
+          <p className="decision-info-eyebrow">{view === 'what-if' ? 'WHAT-IF SIMULATION' : view === 'complete' ? 'DECISION COMPLETE' : 'DECISION RESULTS'}</p>
           <h1>{draft.title}</h1>
           <p>{draft.description || pageDescription}</p>
         </div>
@@ -190,14 +193,16 @@ const ResultPage = () => {
               <div className="decision-simulation-results">
                 <div className="decision-chart-legend"><span>원래 결과</span><span>시뮬레이션</span></div>
                 <ScoreChart alternatives={draft.alternatives} results={simulationResults} comparisonResults={baseResults} />
-                <div className="decision-rank-changes">
-                  {simulationResults.map((result, index) => {
-                    const oldRank = baseResults.findIndex((item) => item.id === result.id) + 1;
-                    const change = oldRank - index - 1;
-                    return <p key={result.id}><span>{result.name}</span><strong>{change === 0 ? '순위 유지' : `${Math.abs(change)}계단 ${change > 0 ? '상승' : '하락'}`}</strong></p>;
-                  })}
+                <div className="decision-simulation-summary">
+                  <div className="decision-rank-changes">
+                    {simulationResults.map((result, index) => {
+                      const oldRank = baseResults.findIndex((item) => item.id === result.id) + 1;
+                      const change = oldRank - index - 1;
+                      return <p key={result.id}><span>{result.name}</span><strong>{change === 0 ? '순위 유지' : `${Math.abs(change)}계단 ${change > 0 ? '상승' : '하락'}`}</strong></p>;
+                    })}
+                  </div>
+                  <a className="decision-next-button" href="/complete">최종 선택 확정하기 <span aria-hidden="true">→</span></a>
                 </div>
-                <a className="decision-next-button" href="/complete">최종 선택 확정하기 <span aria-hidden="true">→</span></a>
               </div>
             </div>
           )}
@@ -205,10 +210,14 @@ const ResultPage = () => {
           {view === 'complete' && (
             savedRecord ? (
               <div className="decision-complete-state">
-                <span className="decision-complete-check" aria-hidden="true">✓</span>
+                <span className="decision-complete-check" aria-hidden="true">
+                  <img src={checkIcon} alt="" />
+                </span>
                 <h2>결정을 기록했어요.</h2>
                 <p>{savedRecord.title} · 최종 선택: {savedRecord.selectedAlternative}</p>
-                <button className="decision-next-button" type="button" onClick={() => window.location.assign('/')}>홈으로 돌아가기</button>
+                <button className="decision-home-button" type="button" onClick={() => window.location.assign('/')}>
+                  홈으로 돌아가기 <span aria-hidden="true">→</span>
+                </button>
               </div>
             ) : (
               <div className="decision-complete-form">
@@ -222,8 +231,13 @@ const ResultPage = () => {
                     </label>
                   ))}
                 </div>
-                <label className="decision-control-label" htmlFor="decision-reason">선택 이유 <span>선택</span></label>
-                <textarea id="decision-reason" className="decision-control decision-control-textarea" value={reason} onChange={(event) => setReason(event.target.value)} placeholder="이 선택지를 고른 이유를 적어주세요." rows={3} />
+                
+                <label className="decision-info-label" htmlFor="decision-reason">선택 이유 <span className="decision-info-optional">선택</span></label>
+                <textarea id="decision-reason" className="decision-info-textarea result-reason-textarea" value={reason} onChange={(event) => 
+                  setReason(event.target.value)} 
+                  placeholder="이 선택지를 고른 이유를 적어주세요." 
+                  rows={3} 
+                />
                 {showError && <p className="decision-validation-message">최종 선택지를 하나 골라주세요.</p>}
                 <button className="decision-save-button" type="button" onClick={saveDecision}>이 결정 완료하기</button>
               </div>

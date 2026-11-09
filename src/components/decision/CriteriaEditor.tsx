@@ -1,3 +1,7 @@
+import './CriteriaEditor.css';
+import './DecisionEntry.css';
+import './DecisionInfoStep.css';
+
 export interface Criterion {
   id: string;
   name: string;
@@ -14,7 +18,7 @@ interface CriteriaEditorProps {
 
 const CriteriaEditor = ({ criteria, onChange, onAdd, onRemove }: CriteriaEditorProps) => (
   <section className="decision-step-content">
-    <p className="decision-form-eyebrow">STEP 03 · CRITERIA</p>
+    <p className="decision-info-eyebrow">STEP 03 · CRITERIA</p>
     <h1>무엇을 기준으로 판단할까요?</h1>
     <p className="decision-form-description">선택지를 비교할 평가 기준을 추가하거나 수정해보세요.</p>
 
@@ -29,10 +33,10 @@ const CriteriaEditor = ({ criteria, onChange, onAdd, onRemove }: CriteriaEditorP
           </div>
           <div className="decision-criterion-fields">
             <div>
-              <label className="decision-control-label" htmlFor={`criterion-name-${criterion.id}`}>기준</label>
+              <label className="decision-info-label" htmlFor={`criterion-name-${criterion.id}`}>기준</label>
               <input
                 id={`criterion-name-${criterion.id}`}
-                className="decision-control"
+                className="decision-info-input"
                 value={criterion.name}
                 onChange={(event) => onChange(criterion.id, 'name', event.target.value)}
                 placeholder="예: 비용"
@@ -40,10 +44,10 @@ const CriteriaEditor = ({ criteria, onChange, onAdd, onRemove }: CriteriaEditorP
               />
             </div>
             <div>
-              <label className="decision-control-label" htmlFor={`criterion-description-${criterion.id}`}>설명</label>
+              <label className="decision-info-label" htmlFor={`criterion-description-${criterion.id}`}>설명</label>
               <input
                 id={`criterion-description-${criterion.id}`}
-                className="decision-control"
+                className="decision-info-input"
                 value={criterion.description}
                 onChange={(event) => onChange(criterion.id, 'description', event.target.value)}
                 placeholder="예: 전체 여행 경비"
