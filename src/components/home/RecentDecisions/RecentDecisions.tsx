@@ -2,7 +2,7 @@
 import './RecentDecisions.css';
 import DecisionCard from './DecisionCard';
 
-const recentDecisions = [
+const exampleDecisions = [
     {
         id: 1,
         title: '11월 여행지는 어디로?',
@@ -26,7 +26,29 @@ const recentDecisions = [
     },
 ] as const;
 
+interface SavedDecision {
+    id: string;
+    title: string;
+    description: string;
+    date: string;
+    status: 'completed';
+}
+
+const getRecentDecisions = () => {
+    try {
+        const saved = JSON.parse(
+            localStorage.getItem('whatif-decisions') ?? '[]',
+        ) as SavedDecision[];
+
+        return [...saved, ...exampleDecisions].slice(0, 3);
+    } catch {
+        return exampleDecisions;
+    }
+};
+
 const RecentDecisions = () => {
+    const recentDecisions = getRecentDecisions();
+
     return (
         <section className="recent-decisions" id="decisions">
             <div className="recent-decisions-header">
