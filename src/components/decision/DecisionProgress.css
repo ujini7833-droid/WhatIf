@@ -1,6 +1,6 @@
 .decision-progress {
     width: 100%;
-    max-width: 900px;
+    max-width: none;
     margin: 0 auto;
     font-family: 'Pretendard-Regular', sans-serif;
 }
@@ -14,10 +14,11 @@
 }
 
 .decision-progress-label {
-    color: #20e0d0;
+    color: #a98cff;
+    font-family: 'Pretendard-Medium', sans-serif;
     font-size: 12px;
     font-weight: 600;
-    letter-spacing: 0.12em;
+    letter-spacing: 0.09em;
 }
 
 .decision-progress-count {
@@ -34,14 +35,13 @@
 }
 
 .decision-progress-item {
+    position: relative;
+
     display: flex;
     align-items: center;
+    justify-content: center;
     flex: 1;
     min-width: 0;
-}
-
-.decision-progress-item:last-child {
-    flex: 0;
 }
 
 .decision-progress-step {
@@ -58,8 +58,8 @@
     align-items: center;
     justify-content: center;
 
-    width: 36px;
-    height: 36px;
+    width: 40px;
+    height: 40px;
 
     color: #8589a3;
     font-size: 13px;
@@ -85,6 +85,11 @@
     border-color: #20e0d0;
 }
 
+.decision-progress-check {
+    width: 24px;
+    height: 24px;
+}
+
 /* 단계 이름 */
 .decision-progress-name {
     color: #666b83;
@@ -104,9 +109,12 @@
 
 /* 단계 사이 연결선 */
 .decision-progress-line {
-    flex: 1;
+    position: absolute;
+    top: 21px;
+    left: calc(50% + 21px);
+
+    width: calc(100% - 21px);
     height: 1px;
-    margin: 0 12px 25px;
 
     background: rgba(255, 255, 255, 0.12);
     transition: background 0.25s ease;
@@ -123,16 +131,24 @@
     }
 
     .decision-progress-circle {
-        width: 30px;
-        height: 30px;
+        width: 34px;
+        height: 34px;
         font-size: 11px;
+    }
+
+    .decision-progress-line {
+        top: 17px;
+        left: calc(50% + 17px);
+        width: calc(100% - 17px);
+    }
+
+    .decision-progress-check {
+        width: 20px;
+        height: 20px;
     }
 
     .decision-progress-name {
         font-size: 10px;
     }
 
-    .decision-progress-line {
-        margin: 0 5px 22px;
-    }
 }

@@ -1,4 +1,5 @@
 import './DecisionProgress.css';
+import checkIcon from '../../assets/check.svg';
 
 interface DecisionProgressProps {
   currentStep: number;
@@ -10,9 +11,6 @@ const DecisionProgress = ({ currentStep }: DecisionProgressProps) => (
   <div className="decision-progress">
     <div className="decision-progress-header">
       <span className="decision-progress-label">CREATE DECISION</span>
-      <span className="decision-progress-count">
-        STEP {currentStep} / {steps.length}
-      </span>
     </div>
 
     <div className="decision-progress-track">
@@ -27,7 +25,11 @@ const DecisionProgress = ({ currentStep }: DecisionProgressProps) => (
               <div
                 className={`decision-progress-circle ${isCompleted ? 'completed' : ''} ${isActive ? 'active' : ''}`}
               >
-                {isCompleted ? '✓' : stepNumber}
+                {isCompleted ? (
+                  <img className="decision-progress-check" src={checkIcon} alt="" />
+                ) : (
+                  stepNumber
+                )}
               </div>
               <span
                 className={`decision-progress-name ${isActive ? 'active' : ''} ${isCompleted ? 'completed' : ''}`}
