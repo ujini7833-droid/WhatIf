@@ -1,0 +1,106 @@
+.decision-page {
+  width: min(100% - 40px, 900px);
+  margin: 0 auto;
+  padding: 120px 0 72px;
+}
+
+.decision-form-card {
+  margin-top: 56px;
+  padding: 40px;
+  color: #f5f3ff;
+  background: #101326;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 20px;
+}
+
+.decision-form-eyebrow {
+  margin: 0 0 12px;
+  color: #20e0d0;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.decision-form-card h1 {
+  margin: 0;
+  font-size: clamp(24px, 4vw, 32px);
+}
+
+.decision-form-description {
+  margin: 12px 0 32px;
+  color: #a3a7bd;
+  line-height: 1.6;
+}
+
+.decision-form-label {
+  display: block;
+  margin-bottom: 10px;
+  color: #e4e5ef;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.decision-form-card textarea {
+  display: block;
+  width: 100%;
+  min-height: 132px;
+  padding: 16px;
+  resize: vertical;
+  color: #f5f3ff;
+  font: inherit;
+  line-height: 1.6;
+  background: #090c1a;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 12px;
+}
+
+.decision-form-card textarea:focus {
+  outline: 2px solid #8d6bff;
+  outline-offset: 2px;
+}
+
+.decision-form-card textarea::placeholder {
+  color: #747990;
+}
+
+.decision-form-actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 28px;
+}
+
+.decision-form-actions button {
+  min-height: 44px;
+  padding: 0 18px;
+  color: #f5f3ff;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  border: 0;
+  border-radius: 10px;
+}
+
+.decision-back-button {
+  background: #252940;
+}
+
+.decision-next-button {
+  background: linear-gradient(135deg, #9b5cff, #5865ff);
+}
+
+.decision-form-actions button:disabled {
+  cursor: default;
+  opacity: 0.4;
+}
+
+@media (max-width: 600px) {
+  .decision-page {
+    width: min(100% - 32px, 900px);
+    padding: 100px 0 40px;
+  }
+
+  .decision-form-card {
+    margin-top: 36px;
+    padding: 24px 20px;
+  }
+}

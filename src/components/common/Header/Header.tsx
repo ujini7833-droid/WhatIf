@@ -32,6 +32,7 @@ const Header = () => {
             <button
                 type="button"
                 className="header-create-button"
+                onClick={() => window.location.assign('/decision')}
             >
                 <span>+</span>
                 새로운 선택

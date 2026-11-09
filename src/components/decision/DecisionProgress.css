@@ -1,0 +1,138 @@
+.decision-progress {
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto;
+    font-family: 'Pretendard-Regular', sans-serif;
+}
+
+/* 상단 정보 */
+.decision-progress-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 28px;
+}
+
+.decision-progress-label {
+    color: #20e0d0;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+}
+
+.decision-progress-count {
+    color: #8589a3;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+/* 진행 단계 */
+.decision-progress-track {
+    display: flex;
+    align-items: flex-start;
+    width: 100%;
+}
+
+.decision-progress-item {
+    display: flex;
+    align-items: center;
+    flex: 1;
+    min-width: 0;
+}
+
+.decision-progress-item:last-child {
+    flex: 0;
+}
+
+.decision-progress-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    flex-shrink: 0;
+}
+
+/* 원형 단계 표시 */
+.decision-progress-circle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 36px;
+    height: 36px;
+
+    color: #8589a3;
+    font-size: 13px;
+    font-weight: 600;
+
+    background: #15182a;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 50%;
+
+    transition: all 0.25s ease;
+}
+
+.decision-progress-circle.active {
+    color: #ffffff;
+    background: linear-gradient(135deg, #9b5cff, #5865ff);
+    border-color: transparent;
+    box-shadow: 0 0 18px rgba(155, 92, 255, 0.4);
+}
+
+.decision-progress-circle.completed {
+    color: #070914;
+    background: #20e0d0;
+    border-color: #20e0d0;
+}
+
+/* 단계 이름 */
+.decision-progress-name {
+    color: #666b83;
+    font-size: 13px;
+    white-space: nowrap;
+    transition: color 0.25s ease;
+}
+
+.decision-progress-name.active {
+    color: #f5f3ff;
+    font-weight: 600;
+}
+
+.decision-progress-name.completed {
+    color: #20e0d0;
+}
+
+/* 단계 사이 연결선 */
+.decision-progress-line {
+    flex: 1;
+    height: 1px;
+    margin: 0 12px 25px;
+
+    background: rgba(255, 255, 255, 0.12);
+    transition: background 0.25s ease;
+}
+
+.decision-progress-line.completed {
+    background: linear-gradient(90deg, #20e0d0, #9b5cff);
+}
+
+/* 모바일 */
+@media (max-width: 600px) {
+    .decision-progress-header {
+        margin-bottom: 22px;
+    }
+
+    .decision-progress-circle {
+        width: 30px;
+        height: 30px;
+        font-size: 11px;
+    }
+
+    .decision-progress-name {
+        font-size: 10px;
+    }
+
+    .decision-progress-line {
+        margin: 0 5px 22px;
+    }
+}
