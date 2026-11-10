@@ -1,13 +1,9 @@
+import type { Criterion } from '../../types/decision';
 import './CriteriaEditor.css';
 import './DecisionEntry.css';
 import './DecisionInfoStep.css';
 
-export interface Criterion {
-  id: string;
-  name: string;
-  description: string;
-  weight: number;
-}
+export type { Criterion } from '../../types/decision';
 
 interface CriteriaEditorProps {
   criteria: Criterion[];
