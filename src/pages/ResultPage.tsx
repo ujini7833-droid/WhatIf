@@ -212,7 +212,7 @@ const ResultPage = () => {
                     {simulationResults.map((result, index) => {
                       const oldRank = baseResults.findIndex((item) => item.id === result.id) + 1;
                       const change = oldRank - index - 1;
-                      return <p key={result.id}><span>{result.name}</span><strong>{change === 0 ? '순위 유지' : `${Math.abs(change)}계단 ${change > 0 ? '상승' : '하락'}`}</strong></p>;
+                      return <p key={result.id}><span>{result.name}</span><strong>{change === 0 ? '순위 유지' : `${Math.abs(change)}순위 ${change > 0 ? '상승' : '하락'}`}</strong></p>;
                     })}
                   </div>
                   <a className="decision-next-button" href="/complete">최종 선택 확정하기 <span aria-hidden="true">→</span></a>
