@@ -18,7 +18,10 @@ const formatDate = (date?: string) => {
 };
 
 const getRecentDecisions = (inProgress: InProgressDecision[], completed: DecisionRecord[]): RecentDecision[] => {
-    const activeCards: RecentDecision[] = inProgress.map((decision) => ({
+    const completedIds = new Set(completed.map((decision) => decision.id));
+    const activeCards: RecentDecision[] = inProgress
+        .filter((decision) => !completedIds.has(decision.id))
+        .map((decision) => ({
         id: decision.id,
         title: decision.title.trim() || '제목 없는 결정',
         description: decision.description.trim() || '작성 중인 결정',

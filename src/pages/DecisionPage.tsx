@@ -40,11 +40,8 @@ const DecisionPage = () => {
       { id: 'alternative-2', name: '', description: '' },
     ],
     criteria: [
-      { id: 'cost', name: '비용', description: '전체 여행 경비', weight: 30 },
-      { id: 'travel-time', name: '이동 시간', description: '왕복 교통 소요 시간', weight: 25 },
-      { id: 'sights', name: '볼거리', description: '관광 및 구경할 요소', weight: 20 },
-      { id: 'atmosphere', name: '분위기', description: '한적하고 여유로운 정도', weight: 15 },
-      { id: 'accessibility', name: '접근성', description: '대중교통 이용 편의성', weight: 10 },
+      { id: 'criterion-1', name: '', description: '', weight: 50 },
+      { id: 'criterion-2', name: '', description: '', weight: 50 },
     ],
     scores: {},
   };
@@ -57,6 +54,17 @@ const DecisionPage = () => {
     initialized.current = true;
 
     const params = new URLSearchParams(window.location.search);
+    const editId = params.get('edit');
+    if (editId) {
+      const store = useDecisionStore.getState();
+      const completedDraft = store.completedDecisions.find((record) => record.id === editId)?.draft;
+      const existingDraft = completedDraft ?? (store.currentDecision?.id === editId ? store.currentDecision : null);
+      if (existingDraft) {
+        startDecision(existingDraft, 5, true);
+        return;
+      }
+    }
+
     const progressId = params.get('id');
     if (progressId && resumeDecision(progressId)) return;
 
@@ -145,7 +153,8 @@ const DecisionPage = () => {
 
     const draft = { ...decision, title: title.trim(), description: description.trim() };
     updateDecision(draft);
-    removeProgress(decisionId);
+    const isEditingCompleted = useDecisionStore.getState().completedDecisions.some((record) => record.id === decisionId);
+    if (!isEditingCompleted) removeProgress(decisionId);
     window.location.assign('/result');
   };
 

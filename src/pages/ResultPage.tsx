@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { ChevronLeft } from 'lucide-react';
 import Header from '../components/common/Header/Header';
 import type { Criterion, DecisionRecord } from '../types/decision';
 import { useDecisionStore } from '../store/decisionStore';
@@ -19,7 +20,7 @@ const ResultPage = () => {
     ? completedDecisions.find((record) => record.id === requestedId)
     : undefined;
   const draft = requestedId
-    ? completedRecord?.draft ?? (currentDecision?.id === requestedId ? currentDecision : null)
+    ? (currentDecision?.id === requestedId ? currentDecision : completedRecord?.draft ?? null)
     : currentDecision;
   const [simulationCriteria, setSimulationCriteria] = useState<Criterion[]>(() => draft?.criteria ?? []);
   const [selectedAlternative, setSelectedAlternative] = useState('');
@@ -88,7 +89,12 @@ const ResultPage = () => {
       <Header />
       <main className="decision-page outcome-page">
         <div className="outcome-heading">
-          <p className="decision-info-eyebrow">{view === 'what-if' ? 'WHAT-IF SIMULATION' : view === 'complete' ? 'DECISION COMPLETE' : 'DECISION RESULTS'}</p>
+          <div className="outcome-eyebrow-row">
+            <a className="outcome-edit-link" href={`/decision?edit=${encodeURIComponent(draft.id)}`} aria-label="결정 수정">
+              <ChevronLeft size={20} strokeWidth={3} aria-hidden="true" />
+            </a>
+            <p className="decision-info-eyebrow">{view === 'what-if' ? 'WHAT-IF SIMULATION' : view === 'complete' ? 'DECISION COMPLETE' : 'DECISION RESULTS'}</p>
+          </div>
           <h1>{draft.title}</h1>
           <p>{draft.description || pageDescription}</p>
         </div>

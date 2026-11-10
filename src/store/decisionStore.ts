@@ -96,15 +96,33 @@ export const useDecisionStore = create<DecisionStore>()(persist((set, get) => ({
     ? { inProgressDecisions: upsertProgress(state.inProgressDecisions, state.currentDecision, state.currentStep) }
     : state),
 
-  removeProgress: (id) => set((state) => ({
-    inProgressDecisions: state.inProgressDecisions.filter((item) => item.id !== id),
-  })),
+  removeProgress: (id) => {
+    set((state) => ({
+      inProgressDecisions: state.inProgressDecisions.filter((item) => item.id !== id),
+    }));
+    try {
+      const legacy = JSON.parse(localStorage.getItem('whatif-in-progress-decisions') ?? '[]') as InProgressDecision[];
+      localStorage.setItem('whatif-in-progress-decisions', JSON.stringify(legacy.filter((item) => item.id !== id)));
+    } catch {
+      // Zustand's persisted state remains the source of truth if legacy storage is unavailable.
+    }
+  },
 
-  completeDecision: (record) => set((state) => ({
-    currentDecision: record.draft ?? state.currentDecision,
-    completedDecisions: [record, ...state.completedDecisions.filter((item) => item.id !== record.id)],
-    inProgressDecisions: state.inProgressDecisions.filter((item) => item.id !== record.id),
-  })),
+  completeDecision: (record) => {
+    set((state) => ({
+      currentDecision: record.draft ?? state.currentDecision,
+      completedDecisions: [record, ...state.completedDecisions.filter((item) => item.id !== record.id)],
+      inProgressDecisions: state.inProgressDecisions.filter((item) => item.id !== record.id),
+    }));
+    try {
+      const legacyProgress = JSON.parse(localStorage.getItem('whatif-in-progress-decisions') ?? '[]') as InProgressDecision[];
+      const legacyCompleted = JSON.parse(localStorage.getItem('whatif-decisions') ?? '[]') as DecisionRecord[];
+      localStorage.setItem('whatif-in-progress-decisions', JSON.stringify(legacyProgress.filter((item) => item.id !== record.id)));
+      localStorage.setItem('whatif-decisions', JSON.stringify([record, ...legacyCompleted.filter((item) => item.id !== record.id)]));
+    } catch {
+      // Zustand's persisted state remains the source of truth if legacy storage is unavailable.
+    }
+  },
 
   removeDecision: (id) => {
     set((state) => ({

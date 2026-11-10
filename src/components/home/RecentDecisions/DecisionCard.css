@@ -59,6 +59,7 @@
     color: #666b83;
     font-size: 11px;
     white-space: nowrap;
+    transform: translateX(5px);
 }
 
 .decision-card-content {
@@ -121,7 +122,7 @@
 .decision-card-top-actions {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 0px;
 }
 
 .decision-card-delete {
@@ -138,6 +139,7 @@
     border-radius: 8px;
 
     cursor: pointer;
+    transform: translate(10px, -0.7px);
     transition: all 0.2s ease;
 }
 

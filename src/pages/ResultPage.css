@@ -6,6 +6,41 @@
   margin-bottom: 28px;
 }
 
+.outcome-eyebrow-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.outcome-eyebrow-row .decision-info-eyebrow {
+  margin: 0;
+}
+
+.outcome-edit-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 20px;
+  height: 32px;
+  color: #20e0d0;
+  font-family: 'Pretendard-Medium', sans-serif;
+  font-size: 13px;
+  text-decoration: none;
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.outcome-edit-link:hover {
+  color: #c7b2ff;
+  transform: translateX(-2px);
+}
+
+.outcome-edit-link:focus-visible {
+  outline: 2px solid #a98cff;
+  outline-offset: 4px;
+  border-radius: 3px;
+}
+
 .outcome-heading h1 {
   margin: 10px 0 8px;
   color: #f5f3ff;
