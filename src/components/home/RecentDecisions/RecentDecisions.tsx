@@ -49,7 +49,7 @@ const getRecentDecisions = (): RecentDecision[] => {
                 date: formatDate(decision.date),
                 status: 'completed',
             }));
-        return [...activeCards, ...completedCards].slice(0, 3);
+        return [...activeCards, ...completedCards].slice(0, 4);
     } catch {
         return [];
     }

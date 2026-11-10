@@ -1,6 +1,7 @@
 import './TemplateCard.css';
 
 interface TemplateCardProps {
+    id: string;
     icon: string;
     title: string;
     description: string;
@@ -8,13 +9,14 @@ interface TemplateCardProps {
 }
 
 const TemplateCard = ({
+    id,
     icon,
     title,
     description,
     criteriaCount,
 }: TemplateCardProps) => {
     return (
-        <article className="template-card">
+        <a className="template-card" href={`/decision?template=${encodeURIComponent(id)}`}>
 
             <div className="template-card-top">
                 <span className="template-card-icon">
@@ -42,7 +44,7 @@ const TemplateCard = ({
                 </span>
             </div>
 
-            </article>
+        </a>
     );
 };
 

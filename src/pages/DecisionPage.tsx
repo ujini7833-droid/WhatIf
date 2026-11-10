@@ -6,6 +6,7 @@ import DecisionInfoStep from '../components/decision/DecisionInfoStep';
 import DecisionProgress from '../components/decision/DecisionProgress';
 import ScoreMatrix from '../components/decision/ScoreMatrix';
 import WeightSlider from '../components/decision/WeightSlider';
+import { decisionTemplates } from '../data/decisionTemplates';
 import './DecisionLayout.css';
 import './DecisionPage.css';
 
@@ -40,6 +41,11 @@ const loadProgress = (): InProgressDecision | null => {
   } catch {
     return null;
   }
+};
+
+const loadTemplate = () => {
+  const templateId = new URLSearchParams(window.location.search).get('template');
+  return decisionTemplates.find((template) => template.id === templateId) ?? null;
 };
 
 const distributeWeight = (criteria: Criterion[], targetId: string, targetWeight: number) => {
@@ -78,22 +84,23 @@ const normalizeWeights = (criteria: Criterion[]) => {
 
 const DecisionPage = () => {
   const [loadedProgress] = useState(loadProgress);
+  const [selectedTemplate] = useState(loadTemplate);
   const [decisionId] = useState(() => loadedProgress?.id ?? createId('decision'));
   const [currentStep, setCurrentStep] = useState(loadedProgress?.currentStep ?? 1);
-  const [title, setTitle] = useState(loadedProgress?.title ?? '');
-  const [description, setDescription] = useState(loadedProgress?.description ?? '');
+  const [title, setTitle] = useState(loadedProgress?.title ?? selectedTemplate?.title ?? '');
+  const [description, setDescription] = useState(loadedProgress?.description ?? selectedTemplate?.description ?? '');
   const [alternatives, setAlternatives] = useState<Alternative[]>(loadedProgress?.alternatives ?? [
     { id: 'alternative-1', name: '', description: '' },
     { id: 'alternative-2', name: '', description: '' },
   ]);
-  const [criteria, setCriteria] = useState<Criterion[]>(loadedProgress?.criteria ?? initialCriteria);
+  const [criteria, setCriteria] = useState<Criterion[]>(loadedProgress?.criteria ?? selectedTemplate?.criteria ?? initialCriteria);
   const [scores, setScores] = useState<Record<string, Record<string, number>>>(() => loadedProgress?.scores ??
-    Object.fromEntries(initialCriteria.map((criterion) => [
+    Object.fromEntries((selectedTemplate?.criteria ?? initialCriteria).map((criterion) => [
       criterion.id,
       { 'alternative-1': 3, 'alternative-2': 3 },
     ])),
   );
-  const [hasUserInput, setHasUserInput] = useState(Boolean(loadedProgress));
+  const [hasUserInput, setHasUserInput] = useState(Boolean(loadedProgress || selectedTemplate));
   const [showValidation, setShowValidation] = useState(false);
   const weightTotal = criteria.reduce((sum, criterion) => sum + criterion.weight, 0);
 
@@ -251,7 +258,6 @@ const DecisionPage = () => {
             onChange={(id, value) => { setHasUserInput(true); setCriteria((current) => current.map((criterion) => criterion.id === id ? { ...criterion, weight: value } : criterion)); }}
             onRangeChange={(id, value) => { setHasUserInput(true); setCriteria((current) => distributeWeight(current, id, value)); }}
           />
-          {showValidation && <p className="decision-validation-message">가중치 합계가 100%인지 확인해주세요.</p>}
         </section>
       );
     }
@@ -277,7 +283,12 @@ const DecisionPage = () => {
             <button className="decision-back-button" type="button" onClick={() => { setShowValidation(false); setCurrentStep((step) => Math.max(1, step - 1)); }} disabled={currentStep === 1}>
               이전
             </button>
-            <button className="decision-next-button" type="button" onClick={goToNextStep}>
+            <button
+              className="decision-next-button"
+              type="button"
+              onClick={goToNextStep}
+              disabled={currentStep === 4 && weightTotal !== 100}
+            >
               {currentStep === 5 ? '결과 확인' : '다음 단계'} <span aria-hidden="true">→</span>
             </button>
           </div>
