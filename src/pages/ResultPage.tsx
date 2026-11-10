@@ -20,6 +20,7 @@ interface DecisionDraft {
 
 interface DecisionRecord {
   id: string;
+  draft?: DecisionDraft;
   title: string;
   description: string;
   selectedAlternative: string;
@@ -30,6 +31,16 @@ interface DecisionRecord {
 
 const loadDraft = (): DecisionDraft | null => {
   try {
+    const selectedId = new URLSearchParams(window.location.search).get('id');
+    if (selectedId) {
+      const records = JSON.parse(localStorage.getItem('whatif-decisions') ?? '[]') as DecisionRecord[];
+      const selectedRecord = records.find((record) => record.id === selectedId);
+      if (selectedRecord?.draft) return selectedRecord.draft;
+      const current = sessionStorage.getItem('whatif-current-decision');
+      const currentDraft = current ? JSON.parse(current) as DecisionDraft : null;
+      return currentDraft?.id === selectedId ? currentDraft : null;
+    }
+
     const value = sessionStorage.getItem('whatif-current-decision');
     return value ? JSON.parse(value) as DecisionDraft : null;
   } catch {
@@ -120,6 +131,7 @@ const ResultPage = () => {
     if (!chosen) return;
     const record: DecisionRecord = {
       id: draft.id,
+      draft,
       title: draft.title,
       description: reason.trim() || draft.description || `최종 선택: ${chosen.name}`,
       selectedAlternative: chosen.name,

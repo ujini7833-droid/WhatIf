@@ -1,6 +1,7 @@
 import './DecisionCard.css';
 
 interface DecisionCardProps {
+    id: string;
     title: string;
     description: string;
     date: string;
@@ -8,13 +9,17 @@ interface DecisionCardProps {
 }
 
 const DecisionCard = ({
+    id,
     title,
     description,
     date,
     status,
 }: DecisionCardProps) => {
     return (
-        <article className="decision-card">
+        <a
+            className="decision-card"
+            href={status === 'completed' ? `/result?id=${encodeURIComponent(id)}` : `/decision?id=${encodeURIComponent(id)}`}
+        >
             <div className="decision-card-top">
                 <span className={`decision-card-status decision-card-status-${status}`}>
                     {status === 'completed' ? '완료' : '진행 중'}
@@ -44,7 +49,7 @@ const DecisionCard = ({
                     →
                 </span>
             </div>
-        </article>
+        </a>
     );
 };
 

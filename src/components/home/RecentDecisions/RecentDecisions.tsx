@@ -2,47 +2,56 @@
 import './RecentDecisions.css';
 import DecisionCard from './DecisionCard';
 
-const exampleDecisions = [
-    {
-        id: 1,
-        title: '11월 여행지는 어디로?',
-        description: '혼자 떠나는 가을 여행',
-        date: '2026.10.28',
-        status: 'completed',
-    },
-    {
-        id: 2,
-        title: '새 노트북 고르기',
-        description: '개발용 노트북 비교',
-        date: '2026.10.25',
-        status: 'in-progress',
-    },
-    {
-        id: 3,
-        title: '프로젝트 주제 정하기',
-        description: '포트폴리오 프로젝트 아이디어',
-        date: '2026.10.20',
-        status: 'completed',
-    },
-] as const;
-
-interface SavedDecision {
+interface RecentDecision {
     id: string;
     title: string;
     description: string;
     date: string;
-    status: 'completed';
+    status: 'completed' | 'in-progress';
 }
 
-const getRecentDecisions = () => {
-    try {
-        const saved = JSON.parse(
-            localStorage.getItem('whatif-decisions') ?? '[]',
-        ) as SavedDecision[];
+interface StoredDecision {
+    id: string;
+    title?: string;
+    description?: string;
+    date?: string;
+    updatedAt?: string;
+    draft?: unknown;
+    status?: 'completed';
+}
 
-        return [...saved, ...exampleDecisions].slice(0, 3);
+const formatDate = (date?: string) => {
+    if (!date) return new Date().toLocaleDateString('sv-SE').replaceAll('-', '.');
+    return date.slice(0, 10).replaceAll('-', '.');
+};
+
+const getRecentDecisions = (): RecentDecision[] => {
+    try {
+        const inProgress = JSON.parse(
+            localStorage.getItem('whatif-in-progress-decisions') ?? '[]',
+        ) as StoredDecision[];
+        const completed = JSON.parse(
+            localStorage.getItem('whatif-decisions') ?? '[]',
+        ) as StoredDecision[];
+        const activeCards: RecentDecision[] = inProgress.map((decision) => ({
+            id: decision.id,
+            title: decision.title?.trim() || '제목 없는 결정',
+            description: decision.description?.trim() || '작성 중인 결정',
+            date: formatDate(decision.updatedAt),
+            status: 'in-progress',
+        }));
+        const completedCards: RecentDecision[] = completed
+            .filter((decision) => decision.draft)
+            .map((decision) => ({
+                id: decision.id,
+                title: decision.title ?? '제목 없는 결정',
+                description: decision.description ?? '',
+                date: formatDate(decision.date),
+                status: 'completed',
+            }));
+        return [...activeCards, ...completedCards].slice(0, 3);
     } catch {
-        return exampleDecisions;
+        return [];
     }
 };
 
@@ -78,6 +87,7 @@ const RecentDecisions = () => {
                 {recentDecisions.map((decision) => (
                      <DecisionCard
                         key={decision.id}
+                        id={decision.id}
                         title={decision.title}
                         description={decision.description}
                         date={decision.date}
