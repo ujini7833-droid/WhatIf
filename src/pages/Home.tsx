@@ -7,7 +7,7 @@ import FeatureSection from '../components/home/Features/FeatureSection';
 const Home = () => {
     return (
         <>
-            <Header />
+            <Header sticky />
 
             <main>
                 <Hero />

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Header from '../components/common/Header/Header';
 import AlternativeStep, { type Alternative } from '../components/decision/AlternativeStep';
 import CriteriaEditor, { type Criterion } from '../components/decision/CriteriaEditor';
@@ -6,6 +6,7 @@ import DecisionInfoStep from '../components/decision/DecisionInfoStep';
 import DecisionProgress from '../components/decision/DecisionProgress';
 import ScoreMatrix from '../components/decision/ScoreMatrix';
 import WeightSlider from '../components/decision/WeightSlider';
+import { decisionTemplates } from '../data/decisionTemplates';
 import './DecisionLayout.css';
 import './DecisionPage.css';
 
@@ -18,6 +19,34 @@ const initialCriteria: Criterion[] = [
 ];
 
 const createId = (prefix: string) => `${prefix}-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
+
+
+interface InProgressDecision {
+  id: string;
+  title: string;
+  description: string;
+  alternatives: Alternative[];
+  criteria: Criterion[];
+  scores: Record<string, Record<string, number>>;
+  currentStep: number;
+  updatedAt: string;
+}
+
+const loadProgress = (): InProgressDecision | null => {
+  try {
+    const selectedId = new URLSearchParams(window.location.search).get('id');
+    if (!selectedId) return null;
+    const saved = JSON.parse(localStorage.getItem('whatif-in-progress-decisions') ?? '[]') as InProgressDecision[];
+    return saved.find((item) => item.id === selectedId) ?? null;
+  } catch {
+    return null;
+  }
+};
+
+const loadTemplate = () => {
+  const templateId = new URLSearchParams(window.location.search).get('template');
+  return decisionTemplates.find((template) => template.id === templateId) ?? null;
+};
 
 const distributeWeight = (criteria: Criterion[], targetId: string, targetWeight: number) => {
   const safeWeight = Math.max(0, Math.min(100, Math.round(targetWeight)));
@@ -54,29 +83,55 @@ const normalizeWeights = (criteria: Criterion[]) => {
 };
 
 const DecisionPage = () => {
-  const [currentStep, setCurrentStep] = useState(1);
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
-  const [alternatives, setAlternatives] = useState<Alternative[]>([
+  const [loadedProgress] = useState(loadProgress);
+  const [selectedTemplate] = useState(loadTemplate);
+  const [decisionId] = useState(() => loadedProgress?.id ?? createId('decision'));
+  const [currentStep, setCurrentStep] = useState(loadedProgress?.currentStep ?? 1);
+  const [title, setTitle] = useState(loadedProgress?.title ?? selectedTemplate?.title ?? '');
+  const [description, setDescription] = useState(loadedProgress?.description ?? selectedTemplate?.description ?? '');
+  const [alternatives, setAlternatives] = useState<Alternative[]>(loadedProgress?.alternatives ?? [
     { id: 'alternative-1', name: '', description: '' },
     { id: 'alternative-2', name: '', description: '' },
   ]);
-  const [criteria, setCriteria] = useState<Criterion[]>(initialCriteria);
-  const [scores, setScores] = useState<Record<string, Record<string, number>>>(() =>
-    Object.fromEntries(initialCriteria.map((criterion) => [
+  const [criteria, setCriteria] = useState<Criterion[]>(loadedProgress?.criteria ?? selectedTemplate?.criteria ?? initialCriteria);
+  const [scores, setScores] = useState<Record<string, Record<string, number>>>(() => loadedProgress?.scores ??
+    Object.fromEntries((selectedTemplate?.criteria ?? initialCriteria).map((criterion) => [
       criterion.id,
       { 'alternative-1': 3, 'alternative-2': 3 },
     ])),
   );
+  const [hasUserInput, setHasUserInput] = useState(Boolean(loadedProgress || selectedTemplate));
   const [showValidation, setShowValidation] = useState(false);
   const weightTotal = criteria.reduce((sum, criterion) => sum + criterion.weight, 0);
 
+  useEffect(() => {
+    if (!hasUserInput) return;
+    const progress: InProgressDecision = {
+      id: decisionId,
+      title,
+      description,
+      alternatives,
+      criteria,
+      scores,
+      currentStep,
+      updatedAt: new Date().toISOString(),
+    };
+    try {
+      const saved = JSON.parse(localStorage.getItem('whatif-in-progress-decisions') ?? '[]') as InProgressDecision[];
+      localStorage.setItem('whatif-in-progress-decisions', JSON.stringify([progress, ...saved.filter((item) => item.id !== decisionId)]));
+    } catch {
+      localStorage.setItem('whatif-in-progress-decisions', JSON.stringify([progress]));
+    }
+  }, [alternatives, criteria, currentStep, decisionId, description, hasUserInput, scores, title]);
+
   const updateAlternative = (id: string, field: 'name' | 'description', value: string) => {
+    setHasUserInput(true);
     setAlternatives((current) => current.map((item) => item.id === id ? { ...item, [field]: value } : item));
     setShowValidation(false);
   };
 
   const addAlternative = () => {
+    setHasUserInput(true);
     const id = createId('alternative');
     setAlternatives((current) => [...current, { id, name: '', description: '' }]);
     setScores((current) => Object.fromEntries(Object.entries(current).map(([criterionId, row]) => [
@@ -86,6 +141,7 @@ const DecisionPage = () => {
   };
 
   const removeAlternative = (id: string) => {
+    setHasUserInput(true);
     setAlternatives((current) => current.filter((item) => item.id !== id));
     setScores((current) => Object.fromEntries(Object.entries(current).map(([criterionId, row]) => {
       const nextRow = { ...row };
@@ -95,11 +151,13 @@ const DecisionPage = () => {
   };
 
   const updateCriterion = (id: string, field: 'name' | 'description', value: string) => {
+    setHasUserInput(true);
     setCriteria((current) => current.map((item) => item.id === id ? { ...item, [field]: value } : item));
     setShowValidation(false);
   };
 
   const addCriterion = () => {
+    setHasUserInput(true);
     const id = createId('criterion');
     setCriteria((current) => [...current, { id, name: '', description: '', weight: 0 }]);
     setScores((current) => ({
@@ -109,6 +167,7 @@ const DecisionPage = () => {
   };
 
   const removeCriterion = (id: string) => {
+    setHasUserInput(true);
     setCriteria((current) => normalizeWeights(current.filter((item) => item.id !== id)));
     setScores((current) => {
       const next = { ...current };
@@ -118,6 +177,7 @@ const DecisionPage = () => {
   };
 
   const updateScore = (criterionId: string, alternativeId: string, score: number) => {
+    setHasUserInput(true);
     setScores((current) => ({
       ...current,
       [criterionId]: { ...current[criterionId], [alternativeId]: score },
@@ -148,8 +208,10 @@ const DecisionPage = () => {
       return;
     }
 
-    const draft = { id: createId('decision'), title: title.trim(), description: description.trim(), alternatives, criteria, scores };
+    const draft = { id: decisionId, title: title.trim(), description: description.trim(), alternatives, criteria, scores };
     sessionStorage.setItem('whatif-current-decision', JSON.stringify(draft));
+    const inProgress = JSON.parse(localStorage.getItem('whatif-in-progress-decisions') ?? '[]') as InProgressDecision[];
+    localStorage.setItem('whatif-in-progress-decisions', JSON.stringify(inProgress.filter((item) => item.id !== decisionId)));
     window.location.assign('/result');
   };
 
@@ -160,8 +222,8 @@ const DecisionPage = () => {
           title={title}
           description={description}
           showTitleError={showValidation && !title.trim()}
-          onTitleChange={(value) => { setTitle(value); setShowValidation(false); }}
-          onDescriptionChange={setDescription}
+          onTitleChange={(value) => { setTitle(value); setHasUserInput(true); setShowValidation(false); }}
+          onDescriptionChange={(value) => { setDescription(value); setHasUserInput(true); }}
         />
       );
     }
@@ -189,9 +251,13 @@ const DecisionPage = () => {
         <section className="decision-step-content">
           <p className="decision-info-eyebrow">STEP 04 · WEIGHTS</p>
           <h1>각 기준은 얼마나 중요한가요?</h1>
-          <p className="decision-form-description">가중치는 판단의 우선순위를 나타내요. 슬라이더를 움직이면 나머지 기준의 비율을 유지하며 합계가 100%로 맞춰집니다.</p>
-          <WeightSlider criteria={criteria} onChange={(id, value) => setCriteria((current) => distributeWeight(current, id, value))} />
-          {showValidation && <p className="decision-validation-message">가중치 합계가 100%인지 확인해주세요.</p>}
+          <p className="decision-form-description">가중치는 판단의 우선순위예요. 슬라이더로 조정하거나 각 기준의 가중치를 직접 입력해보세요.</p>
+          <WeightSlider
+            criteria={criteria}
+            allowManualInput
+            onChange={(id, value) => { setHasUserInput(true); setCriteria((current) => current.map((criterion) => criterion.id === id ? { ...criterion, weight: value } : criterion)); }}
+            onRangeChange={(id, value) => { setHasUserInput(true); setCriteria((current) => distributeWeight(current, id, value)); }}
+          />
         </section>
       );
     }
@@ -217,7 +283,12 @@ const DecisionPage = () => {
             <button className="decision-back-button" type="button" onClick={() => { setShowValidation(false); setCurrentStep((step) => Math.max(1, step - 1)); }} disabled={currentStep === 1}>
               이전
             </button>
-            <button className="decision-next-button" type="button" onClick={goToNextStep}>
+            <button
+              className="decision-next-button"
+              type="button"
+              onClick={goToNextStep}
+              disabled={currentStep === 4 && weightTotal !== 100}
+            >
               {currentStep === 5 ? '결과 확인' : '다음 단계'} <span aria-hidden="true">→</span>
             </button>
           </div>

@@ -20,6 +20,7 @@ interface DecisionDraft {
 
 interface DecisionRecord {
   id: string;
+  draft?: DecisionDraft;
   title: string;
   description: string;
   selectedAlternative: string;
@@ -30,6 +31,16 @@ interface DecisionRecord {
 
 const loadDraft = (): DecisionDraft | null => {
   try {
+    const selectedId = new URLSearchParams(window.location.search).get('id');
+    if (selectedId) {
+      const records = JSON.parse(localStorage.getItem('whatif-decisions') ?? '[]') as DecisionRecord[];
+      const selectedRecord = records.find((record) => record.id === selectedId);
+      if (selectedRecord?.draft) return selectedRecord.draft;
+      const current = sessionStorage.getItem('whatif-current-decision');
+      const currentDraft = current ? JSON.parse(current) as DecisionDraft : null;
+      return currentDraft?.id === selectedId ? currentDraft : null;
+    }
+
     const value = sessionStorage.getItem('whatif-current-decision');
     return value ? JSON.parse(value) as DecisionDraft : null;
   } catch {
@@ -120,6 +131,7 @@ const ResultPage = () => {
     if (!chosen) return;
     const record: DecisionRecord = {
       id: draft.id,
+      draft,
       title: draft.title,
       description: reason.trim() || draft.description || `최종 선택: ${chosen.name}`,
       selectedAlternative: chosen.name,
@@ -154,12 +166,14 @@ const ResultPage = () => {
         </nav>
 
         <section className="decision-form-card outcome-card">
-          <div className="outcome-section-heading">
-            <div>
-              <h2>{pageTitle}</h2>
-              <p>{pageDescription}</p>
+          {!savedRecord && (
+            <div className="outcome-section-heading">
+              <div>
+                <h2>{pageTitle}</h2>
+                <p>{pageDescription}</p>
+              </div>
             </div>
-          </div>
+          )}
 
           {view === 'results' && (
             <>
@@ -198,7 +212,7 @@ const ResultPage = () => {
                     {simulationResults.map((result, index) => {
                       const oldRank = baseResults.findIndex((item) => item.id === result.id) + 1;
                       const change = oldRank - index - 1;
-                      return <p key={result.id}><span>{result.name}</span><strong>{change === 0 ? '순위 유지' : `${Math.abs(change)}계단 ${change > 0 ? '상승' : '하락'}`}</strong></p>;
+                      return <p key={result.id}><span>{result.name}</span><strong>{change === 0 ? '순위 유지' : `${Math.abs(change)}순위 ${change > 0 ? '상승' : '하락'}`}</strong></p>;
                     })}
                   </div>
                   <a className="decision-next-button" href="/complete">최종 선택 확정하기 <span aria-hidden="true">→</span></a>

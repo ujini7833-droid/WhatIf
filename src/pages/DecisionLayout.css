@@ -40,8 +40,13 @@
 }
 
 .decision-form-actions button:disabled {
-  cursor: default;
+  cursor: not-allowed;
   opacity: 0.4;
+}
+
+.decision-form-actions .decision-next-button:disabled {
+  color: #a3a7bd;
+  background: #303449;
 }
 
 @media (max-width: 600px) {

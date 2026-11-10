@@ -1,13 +1,17 @@
+import { useState } from 'react';
 import type { Criterion } from './CriteriaEditor';
 import './WeightSlider.css';
 
 interface WeightSliderProps {
   criteria: Criterion[];
   onChange: (id: string, value: number) => void;
+  onRangeChange?: (id: string, value: number) => void;
   simulated?: boolean;
+  allowManualInput?: boolean;
 }
 
-const WeightSlider = ({ criteria, onChange, simulated = false }: WeightSliderProps) => {
+const WeightSlider = ({ criteria, onChange, onRangeChange, simulated = false, allowManualInput = false }: WeightSliderProps) => {
+  const [manualValues, setManualValues] = useState<Record<string, string>>({});
   const total = criteria.reduce((sum, criterion) => sum + criterion.weight, 0);
 
   return (
@@ -19,7 +23,37 @@ const WeightSlider = ({ criteria, onChange, simulated = false }: WeightSliderPro
               <span className="decision-weight-name">{criterion.name || '이름 없는 기준'}</span>
               {criterion.description && <span className="decision-weight-description">{criterion.description}</span>}
             </div>
-            <strong>{criterion.weight}%</strong>
+            {allowManualInput ? (
+              <label className="decision-weight-input-wrap">
+                <input
+                  className="decision-weight-input"
+                  type="text"
+                  inputMode="numeric"
+                  min="0"
+                  max="100"
+                  value={manualValues[criterion.id] ?? String(criterion.weight)}
+                  onFocus={(event) => {
+                    setManualValues((current) => ({ ...current, [criterion.id]: String(criterion.weight) }));
+                    event.currentTarget.select();
+                  }}
+                  onChange={(event) => {
+                    const rawValue = event.target.value.replace(/\D/g, '');
+                    const value = rawValue.replace(/^0+(?=\d)/, '');
+                    setManualValues((current) => ({ ...current, [criterion.id]: value }));
+                    onChange(criterion.id, value === '' ? 0 : Math.min(100, Number(value)));
+                  }}
+                  onBlur={() => setManualValues((current) => {
+                    const next = { ...current };
+                    delete next[criterion.id];
+                    return next;
+                  })}
+                  aria-label={`${criterion.name || '기준'} 가중치 직접 입력`}
+                />
+                <span>%</span>
+              </label>
+            ) : (
+              <strong>{criterion.weight}%</strong>
+            )}
           </div>
           <input
             className="decision-weight-range"
@@ -28,7 +62,7 @@ const WeightSlider = ({ criteria, onChange, simulated = false }: WeightSliderPro
             max="100"
             step="1"
             value={criterion.weight}
-            onChange={(event) => onChange(criterion.id, Number(event.target.value))}
+            onChange={(event) => (onRangeChange ?? onChange)(criterion.id, Number(event.target.value))}
             aria-label={`${criterion.name} 가중치${simulated ? ' 시뮬레이션' : ''}`}
           />
         </div>

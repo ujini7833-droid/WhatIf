@@ -1,5 +1,7 @@
 .template-card {
     display: flex;
+    color: inherit;
+    text-decoration: none;
     flex-direction: column;
     justify-content: space-between;
     min-height: 220px;
