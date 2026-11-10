@@ -189,8 +189,13 @@ const DecisionPage = () => {
         <section className="decision-step-content">
           <p className="decision-info-eyebrow">STEP 04 · WEIGHTS</p>
           <h1>각 기준은 얼마나 중요한가요?</h1>
-          <p className="decision-form-description">가중치는 판단의 우선순위를 나타내요. 슬라이더를 움직이면 나머지 기준의 비율을 유지하며 합계가 100%로 맞춰집니다.</p>
-          <WeightSlider criteria={criteria} onChange={(id, value) => setCriteria((current) => distributeWeight(current, id, value))} />
+          <p className="decision-form-description">가중치는 판단의 우선순위예요. 슬라이더로 조정하거나 각 기준의 가중치를 직접 입력해보세요.</p>
+          <WeightSlider
+            criteria={criteria}
+            allowManualInput
+            onChange={(id, value) => setCriteria((current) => current.map((criterion) => criterion.id === id ? { ...criterion, weight: value } : criterion))}
+            onRangeChange={(id, value) => setCriteria((current) => distributeWeight(current, id, value))}
+          />
           {showValidation && <p className="decision-validation-message">가중치 합계가 100%인지 확인해주세요.</p>}
         </section>
       );
