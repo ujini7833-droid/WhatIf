@@ -154,12 +154,14 @@ const ResultPage = () => {
         </nav>
 
         <section className="decision-form-card outcome-card">
-          <div className="outcome-section-heading">
-            <div>
-              <h2>{pageTitle}</h2>
-              <p>{pageDescription}</p>
+          {!savedRecord && (
+            <div className="outcome-section-heading">
+              <div>
+                <h2>{pageTitle}</h2>
+                <p>{pageDescription}</p>
+              </div>
             </div>
-          </div>
+          )}
 
           {view === 'results' && (
             <>

@@ -166,3 +166,6 @@
         padding: 9px 13px;
     }
 }
+.header-sticky {
+    position: fixed;
+}

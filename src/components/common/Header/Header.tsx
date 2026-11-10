@@ -1,8 +1,12 @@
 import './Header.css';
 
-const Header = () => {
+interface HeaderProps {
+    sticky?: boolean;
+}
+
+const Header = ({ sticky = false }: HeaderProps) => {
     return (
-        <header className="header">
+        <header className={`header${sticky ? ' header-sticky' : ''}`}>
 
             <a
                 href="/"
