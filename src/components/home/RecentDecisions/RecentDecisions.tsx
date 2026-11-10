@@ -12,6 +12,14 @@ interface RecentDecision {
     status: 'completed' | 'in-progress';
 }
 
+const removeDecision = useDecisionStore(
+    (state) => state.removeDecision
+);
+
+const handleDeleteDecision = (id: string) => {
+    removeDecision(id);
+};
+
 const formatDate = (date?: string) => {
     if (!date) return new Date().toLocaleDateString('sv-SE').replaceAll('-', '.');
     return date.slice(0, 10).replaceAll('-', '.');
@@ -76,6 +84,7 @@ const RecentDecisions = () => {
                         description={decision.description}
                         date={decision.date}
                         status={decision.status}
+                        onDelete={handleDeleteDecision}
                     />
                 ))}
             </div>

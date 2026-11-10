@@ -15,6 +15,7 @@ interface DecisionStore {
   removeProgress: (id: string) => void;
   completeDecision: (record: DecisionRecord) => void;
   selectDecision: (decision: DecisionDraft) => void;
+  removeDecision: (id: string) => void;
 }
 
 const readLegacyData = () => {
@@ -103,6 +104,12 @@ export const useDecisionStore = create<DecisionStore>()(persist((set, get) => ({
     currentDecision: record.draft ?? state.currentDecision,
     completedDecisions: [record, ...state.completedDecisions.filter((item) => item.id !== record.id)],
     inProgressDecisions: state.inProgressDecisions.filter((item) => item.id !== record.id),
+  })),
+
+  removeDecision: (id) => set((state) => ({
+    currentDecision: state.currentDecision?.id === id ? undefined : state.currentDecision,
+    inProgressDecisions: state.inProgressDecisions.filter((item) => item.id !== id),
+    completedDecisions: state.completedDecisions.filter((item) => item.id !== id),
   })),
 
   selectDecision: (currentDecision) => set({ currentDecision }),
