@@ -106,11 +106,27 @@ export const useDecisionStore = create<DecisionStore>()(persist((set, get) => ({
     inProgressDecisions: state.inProgressDecisions.filter((item) => item.id !== record.id),
   })),
 
-  removeDecision: (id) => set((state) => ({
-    currentDecision: state.currentDecision?.id === id ? undefined : state.currentDecision,
-    inProgressDecisions: state.inProgressDecisions.filter((item) => item.id !== id),
-    completedDecisions: state.completedDecisions.filter((item) => item.id !== id),
-  })),
+  removeDecision: (id) => {
+    set((state) => ({
+      currentDecision: state.currentDecision?.id === id ? null : state.currentDecision,
+      currentStep: state.currentDecision?.id === id ? 1 : state.currentStep,
+      inProgressDecisions: state.inProgressDecisions.filter((item) => item.id !== id),
+      completedDecisions: state.completedDecisions.filter((item) => item.id !== id),
+    }));
+
+    try {
+      const inProgress = JSON.parse(localStorage.getItem('whatif-in-progress-decisions') ?? '[]') as InProgressDecision[];
+      const completed = JSON.parse(localStorage.getItem('whatif-decisions') ?? '[]') as DecisionRecord[];
+      localStorage.setItem('whatif-in-progress-decisions', JSON.stringify(inProgress.filter((item) => item.id !== id)));
+      localStorage.setItem('whatif-decisions', JSON.stringify(completed.filter((item) => item.id !== id)));
+      const current = sessionStorage.getItem('whatif-current-decision');
+      if (current && (JSON.parse(current) as DecisionDraft).id === id) {
+        sessionStorage.removeItem('whatif-current-decision');
+      }
+    } catch {
+      // Zustand's persisted state remains the source of truth if legacy storage is unavailable.
+    }
+  },
 
   selectDecision: (currentDecision) => set({ currentDecision }),
 }), {

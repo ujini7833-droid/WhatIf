@@ -12,14 +12,6 @@ interface RecentDecision {
     status: 'completed' | 'in-progress';
 }
 
-const removeDecision = useDecisionStore(
-    (state) => state.removeDecision
-);
-
-const handleDeleteDecision = (id: string) => {
-    removeDecision(id);
-};
-
 const formatDate = (date?: string) => {
     if (!date) return new Date().toLocaleDateString('sv-SE').replaceAll('-', '.');
     return date.slice(0, 10).replaceAll('-', '.');
@@ -46,6 +38,8 @@ const getRecentDecisions = (inProgress: InProgressDecision[], completed: Decisio
 };
 
 const RecentDecisions = () => {
+    const removeDecision = useDecisionStore((state) => state.removeDecision);
+    const handleDeleteDecision = (id: string) => removeDecision(id);
     const inProgress = useDecisionStore((state) => state.inProgressDecisions);
     const completed = useDecisionStore((state) => state.completedDecisions);
     const recentDecisions = getRecentDecisions(inProgress, completed);
