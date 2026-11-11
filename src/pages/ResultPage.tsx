@@ -69,6 +69,7 @@ const ResultPage = () => {
     }
     const chosen = draft.alternatives.find((alternative) => alternative.id === selectedAlternative);
     if (!chosen) return;
+    const completedAt = new Date();
     const record: DecisionRecord = {
       id: draft.id,
       draft,
@@ -76,7 +77,8 @@ const ResultPage = () => {
       description: reason.trim() || draft.description || `최종 선택: ${chosen.name}`,
       selectedAlternative: chosen.name,
       finalScore: baseResults.find((result) => result.id === chosen.id)?.score ?? 0,
-      date: new Date().toLocaleDateString('sv-SE').replaceAll('-', '.'),
+      date: completedAt.toLocaleDateString('sv-SE').replaceAll('-', '.'),
+      updatedAt: completedAt.toISOString(),
       status: 'completed',
     };
     completeDecision(record);
