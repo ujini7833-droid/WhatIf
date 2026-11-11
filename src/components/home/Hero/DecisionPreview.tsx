@@ -31,13 +31,13 @@ const DecisionPreview = () => {
                         <h2>{decision.title}</h2>
                     </div>
 
-                    <button
+                    <a
                         className="decision-preview-more"
-                        type="button"
-                        aria-label="View more"
+                        href={`/result?id=${encodeURIComponent(decision.id)}`}
+                        aria-label="결과 자세히 보기"
                     >
                         →
-                    </button>
+                    </a>
                 </div>
 
                 <div className="decision-preview-ranking">
@@ -56,9 +56,11 @@ const DecisionPreview = () => {
                         {decision.criteria.length}개의 기준으로 비교했어요.
                     </span>
 
-                    <button type="button">
+                    <a
+                        href={`/result?id=${encodeURIComponent(decision.id)}`}
+                    >
                         자세히 보기 →
-                    </button>
+                    </a>
                 </div>
             </div>
         </div>

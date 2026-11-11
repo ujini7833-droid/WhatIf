@@ -4,6 +4,7 @@ import type { DecisionRecord, InProgressDecision } from '../../../types/decision
 import './RecentDecisions.css';
 import DecisionCard from './DecisionCard';
 import { useDecisionStore } from '../../../store/decisionStore';
+import { formatKoreanDate } from '../../../utils/formatKoreanDate';
 import { ClipboardList, Plus } from 'lucide-react';
 
 interface RecentDecision {
@@ -15,10 +16,9 @@ interface RecentDecision {
     modifiedTimestamp: number;
 }
 
-const formatDate = (date?: string) => {
-    if (!date) return new Date().toLocaleDateString('sv-SE').replaceAll('-', '.');
-    return date.slice(0, 10).replaceAll('-', '.');
-};
+const formatDate = (date?: string) => (
+    formatKoreanDate(date) || formatKoreanDate(new Date().toISOString())
+);
 
 const getModifiedTimestamp = (updatedAt?: string, fallbackDate?: string) => {
     const timestamp = Date.parse(updatedAt ?? fallbackDate?.replaceAll('.', '-') ?? '');

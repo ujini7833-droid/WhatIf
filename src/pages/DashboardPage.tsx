@@ -4,6 +4,7 @@ import Header from '../components/common/Header/Header';
 import DecisionCard from '../components/home/RecentDecisions/DecisionCard';
 import { useDecisionStore } from '../store/decisionStore';
 import type { DecisionRecord, InProgressDecision } from '../types/decision';
+import { formatKoreanDate } from '../utils/formatKoreanDate';
 import './DashboardPage.css';
 
 type StatusFilter = 'all' | 'completed' | 'in-progress';
@@ -17,15 +18,6 @@ interface DashboardDecision {
   status: 'completed' | 'in-progress';
   sortDate: number;
 }
-
-const formatDate = (date?: string) => {
-  if (!date) return '';
-
-  const parsedDate = new Date(date.replaceAll('.', '-'));
-  if (Number.isNaN(parsedDate.getTime())) return '';
-
-  return parsedDate.toLocaleDateString('ko-KR').replaceAll('.', '-').replaceAll(' ', '');
-};
 
 const DashboardPage = () => {
   const inProgress = useDecisionStore((state) => state.inProgressDecisions);
@@ -45,7 +37,7 @@ const DashboardPage = () => {
         id: item.id,
         title: item.title.trim() || '제목 없음',
         description: item.description.trim() || '작성 중',
-        date: formatDate(item.updatedAt),
+        date: formatKoreanDate(item.updatedAt),
         status: 'in-progress',
         sortDate: Date.parse(item.updatedAt) || 0,
       }));
@@ -54,7 +46,7 @@ const DashboardPage = () => {
       id: item.id,
       title: item.title.trim() || '제목 없음',
       description: item.description.trim() || '작성 중',
-      date: formatDate(item.updatedAt ?? item.date),
+      date: formatKoreanDate(item.updatedAt ?? item.date),
       status: 'completed',
       sortDate: Date.parse(item.updatedAt ?? item.date.replaceAll('.', '-')) || 0,
     }));
