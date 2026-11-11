@@ -8,6 +8,7 @@ interface DecisionCardProps {
     description: string;
     date: string;
     status: 'completed' | 'in-progress';
+    isRemoving?: boolean;
     onDelete: (id: string) => void;
 }
 
@@ -17,6 +18,7 @@ const DecisionCard = ({
     description,
     date,
     status,
+    isRemoving = false,
     onDelete,
 }: DecisionCardProps) => {
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -28,7 +30,7 @@ const DecisionCard = ({
 
     return (
         <>
-            <article className="decision-card">
+            <article className={`decision-card${isRemoving ? ' is-removing' : ''}`}>
                 <div className="decision-card-top">
                     <span className={`decision-card-status decision-card-status-${status}`}>
                         {status === 'completed' ? '완료' : '진행 중'}

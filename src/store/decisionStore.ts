@@ -22,7 +22,7 @@ const readLegacyData = () => {
   try {
     const inProgress = JSON.parse(localStorage.getItem('whatif-in-progress-decisions') ?? '[]') as InProgressDecision[];
     const completed = JSON.parse(localStorage.getItem('whatif-decisions') ?? '[]') as DecisionRecord[];
-    const sessionDraft = sessionStorage.getItem('whatif-current-decision');
+    const sessionDraft = localStorage.getItem('whatif-current-decision');
     return {
       inProgressDecisions: inProgress,
       completedDecisions: completed,
@@ -137,9 +137,9 @@ export const useDecisionStore = create<DecisionStore>()(persist((set, get) => ({
       const completed = JSON.parse(localStorage.getItem('whatif-decisions') ?? '[]') as DecisionRecord[];
       localStorage.setItem('whatif-in-progress-decisions', JSON.stringify(inProgress.filter((item) => item.id !== id)));
       localStorage.setItem('whatif-decisions', JSON.stringify(completed.filter((item) => item.id !== id)));
-      const current = sessionStorage.getItem('whatif-current-decision');
+      const current = localStorage.getItem('whatif-current-decision');
       if (current && (JSON.parse(current) as DecisionDraft).id === id) {
-        sessionStorage.removeItem('whatif-current-decision');
+        localStorage.removeItem('whatif-current-decision');
       }
     } catch {
       // Zustand's persisted state remains the source of truth if legacy storage is unavailable.

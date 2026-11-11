@@ -27,6 +27,25 @@
         0 0 24px rgba(155, 92, 255, 0.06);
 }
 
+.decision-card.is-removing {
+    pointer-events: none;
+    animation: decision-card-dismiss 260ms ease-in forwards;
+}
+
+@keyframes decision-card-dismiss {
+    to {
+        opacity: 0;
+        filter: blur(3px);
+        transform: translateY(-8px) scale(0.96);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .decision-card.is-removing {
+        animation-duration: 1ms;
+    }
+}
+
 .decision-card-top {
     display: flex;
     align-items: center;
@@ -242,7 +261,7 @@
     border: none;
     border-radius: 10px;
     cursor: pointer;
-    transition: background 0.2s ease;
+    transition: background 0.3s ease;
 }
 
 .decision-delete-cancel {
