@@ -28,7 +28,9 @@ export const getLatestDecision = (
     });
   }
 
-  return candidates.sort((first, second) => second.updatedAt - first.updatedAt)[0]?.draft ?? null;
+  return candidates
+    .sort((first, second) => second.updatedAt - first.updatedAt)
+    .find(({ draft }) => hasDecisionChartData(draft))?.draft ?? null;
 };
 
 export const hasDecisionChartData = (draft: DecisionDraft) => (
@@ -36,7 +38,7 @@ export const hasDecisionChartData = (draft: DecisionDraft) => (
   && draft.alternatives.every((alternative) => alternative.name.trim())
   && draft.criteria.length >= 2
   && draft.criteria.every((criterion) => criterion.name.trim())
-  && draft.criteria.every((criterion) => draft.alternatives.every((alternative) => (
-    Number.isFinite(draft.scores[criterion.id]?.[alternative.id])
-  )))
+  && Object.values(draft.scores).some((criterionScores) => (
+    Object.values(criterionScores).some((score) => Number.isFinite(score))
+  ))
 );

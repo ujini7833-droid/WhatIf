@@ -19,7 +19,7 @@ const RadarChart = ({ decision }: { decision: DecisionDraft }) => {
         subject: criterion.name,
         ...Object.fromEntries(decision.alternatives.map((alternative) => [
             alternative.id,
-            decision.scores[criterion.id][alternative.id],
+            decision.scores[criterion.id]?.[alternative.id] ?? 3,
         ])),
     }));
 
