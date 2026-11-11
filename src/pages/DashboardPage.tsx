@@ -110,10 +110,6 @@ const DashboardPage = () => {
               지금까지의 고민과 선택을 확인해보세요.
             </p>
           </div>
-
-          <a href="/decisions" className="dashboard-create-button">
-            + 새로운 결정
-          </a>
         </section>
 
         <section className="dashboard-stats">
@@ -143,16 +139,6 @@ const DashboardPage = () => {
         </section>
 
         <section className="dashboard-recent-decisions">
-          <div className="dashboard-list-heading">
-            <div>
-              <h3>All Decisions</h3>
-              <p>기록한 모든 결정을 확인하세요.</p>
-            </div>
-
-            <span className="dashboard-result-count">
-              {filteredDecisions.length}개의 결정
-            </span>
-          </div>
 
           <div className="dashboard-toolbar">
             <div className="dashboard-filter">

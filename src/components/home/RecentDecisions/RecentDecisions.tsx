@@ -87,12 +87,12 @@ const RecentDecisions = () => {
                     </p>
                 </div>
 
-                <button
-                    type="button"
+                <a
+                    href="/dashboard"
                     className="recent-decisions-more"
                 >
                     전체 보기 →
-                </button>
+                </a>
             </div>
 
             <div className="recent-decisions-list">

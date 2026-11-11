@@ -18,14 +18,14 @@ const Header = ({ sticky = false }: HeaderProps) => {
             <nav className="header-nav">
 
                 <a
-                    href="#decisions"
+                    href="/#decisions"
                     className="header-nav-link"
                 >
                     Decisions
                 </a>
 
                 <a
-                    href="#templates"
+                    href="/#templates"
                     className="header-nav-link"
                 >
                     Templates
