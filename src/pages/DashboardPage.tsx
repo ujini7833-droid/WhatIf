@@ -201,13 +201,13 @@ const DashboardPage = () => {
           ) : (
             <div className="dashboard-empty">
               <ListTodo size={32} strokeWidth={1.5} />
-              <p>
+              <h3>
                 {statusFilter === 'all'
                   ? '아직 기록된 결정이 없어요.'
                   : statusFilter === 'in-progress'
                     ? '진행 중인 결정이 없어요.'
                     : '완료된 결정이 없어요.'}
-              </p>
+              </h3>
               <p>새로운 결정을 기록하고, 진행 상황을 관리해보세요.</p>
               {statusFilter === 'all' && (
                 <a href="/decision">첫 번째 결정을 기록해보세요.</a>
