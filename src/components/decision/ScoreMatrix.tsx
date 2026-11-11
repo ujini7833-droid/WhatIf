@@ -1,8 +1,5 @@
-import type { Alternative } from './AlternativeStep';
-import type { Criterion } from './CriteriaEditor';
+import type { Alternative, Criterion, ScoreMap } from '../../types/decision';
 import './ScoreMatrix.css';
-
-type ScoreMap = Record<string, Record<string, number>>;
 
 interface ScoreMatrixProps {
   alternatives: Alternative[];

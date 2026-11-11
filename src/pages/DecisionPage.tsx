@@ -1,187 +1,130 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Header from '../components/common/Header/Header';
-import AlternativeStep, { type Alternative } from '../components/decision/AlternativeStep';
-import CriteriaEditor, { type Criterion } from '../components/decision/CriteriaEditor';
+import AlternativeStep from '../components/decision/AlternativeStep';
+import CriteriaEditor from '../components/decision/CriteriaEditor';
 import DecisionInfoStep from '../components/decision/DecisionInfoStep';
 import DecisionProgress from '../components/decision/DecisionProgress';
 import ScoreMatrix from '../components/decision/ScoreMatrix';
 import WeightSlider from '../components/decision/WeightSlider';
 import { decisionTemplates } from '../data/decisionTemplates';
+import { useDecisionStore } from '../store/decisionStore';
+import type { DecisionDraft } from '../types/decision';
+import { createDefaultScores, distributeWeight, normalizeWeights } from '../utils/calculateScore';
 import './DecisionLayout.css';
 import './DecisionPage.css';
 
-const initialCriteria: Criterion[] = [
-  { id: 'cost', name: '비용', description: '전체 여행 경비', weight: 30 },
-  { id: 'travel-time', name: '이동 시간', description: '왕복 교통 소요 시간', weight: 25 },
-  { id: 'sights', name: '볼거리', description: '관광 및 구경할 요소', weight: 20 },
-  { id: 'atmosphere', name: '분위기', description: '한적하고 여유로운 정도', weight: 15 },
-  { id: 'accessibility', name: '접근성', description: '대중교통 이용 편의성', weight: 10 },
-];
-
 const createId = (prefix: string) => `${prefix}-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
 
-
-interface InProgressDecision {
-  id: string;
-  title: string;
-  description: string;
-  alternatives: Alternative[];
-  criteria: Criterion[];
-  scores: Record<string, Record<string, number>>;
-  currentStep: number;
-  updatedAt: string;
-}
-
-const loadProgress = (): InProgressDecision | null => {
-  try {
-    const selectedId = new URLSearchParams(window.location.search).get('id');
-    if (!selectedId) return null;
-    const saved = JSON.parse(localStorage.getItem('whatif-in-progress-decisions') ?? '[]') as InProgressDecision[];
-    return saved.find((item) => item.id === selectedId) ?? null;
-  } catch {
-    return null;
-  }
-};
 
 const loadTemplate = () => {
   const templateId = new URLSearchParams(window.location.search).get('template');
   return decisionTemplates.find((template) => template.id === templateId) ?? null;
 };
 
-const distributeWeight = (criteria: Criterion[], targetId: string, targetWeight: number) => {
-  const safeWeight = Math.max(0, Math.min(100, Math.round(targetWeight)));
-  const others = criteria.filter((criterion) => criterion.id !== targetId);
-  const otherTotal = others.reduce((sum, criterion) => sum + criterion.weight, 0);
-  let distributed = 0;
-
-  return criteria.map((criterion) => {
-    if (criterion.id === targetId) return { ...criterion, weight: safeWeight };
-    const otherIndex = others.findIndex((other) => other.id === criterion.id);
-    const isLast = otherIndex === others.length - 1;
-    const weight = isLast
-      ? 100 - safeWeight - distributed
-      : otherTotal > 0
-        ? Math.floor(((100 - safeWeight) * criterion.weight) / otherTotal)
-        : Math.floor((100 - safeWeight) / Math.max(others.length, 1));
-    distributed += weight;
-    return { ...criterion, weight };
-  });
-};
-
-const normalizeWeights = (criteria: Criterion[]) => {
-  const total = criteria.reduce((sum, criterion) => sum + criterion.weight, 0);
-  let distributed = 0;
-  return criteria.map((criterion, index) => {
-    const weight = index === criteria.length - 1
-      ? 100 - distributed
-      : total > 0
-        ? Math.floor((criterion.weight / total) * 100)
-        : Math.floor(100 / criteria.length);
-    distributed += weight;
-    return { ...criterion, weight };
-  });
-};
-
 const DecisionPage = () => {
-  const [loadedProgress] = useState(loadProgress);
-  const [selectedTemplate] = useState(loadTemplate);
-  const [decisionId] = useState(() => loadedProgress?.id ?? createId('decision'));
-  const [currentStep, setCurrentStep] = useState(loadedProgress?.currentStep ?? 1);
-  const [title, setTitle] = useState(loadedProgress?.title ?? selectedTemplate?.title ?? '');
-  const [description, setDescription] = useState(loadedProgress?.description ?? selectedTemplate?.description ?? '');
-  const [alternatives, setAlternatives] = useState<Alternative[]>(loadedProgress?.alternatives ?? [
-    { id: 'alternative-1', name: '', description: '' },
-    { id: 'alternative-2', name: '', description: '' },
-  ]);
-  const [criteria, setCriteria] = useState<Criterion[]>(loadedProgress?.criteria ?? selectedTemplate?.criteria ?? initialCriteria);
-  const [scores, setScores] = useState<Record<string, Record<string, number>>>(() => loadedProgress?.scores ??
-    Object.fromEntries((selectedTemplate?.criteria ?? initialCriteria).map((criterion) => [
-      criterion.id,
-      { 'alternative-1': 3, 'alternative-2': 3 },
-    ])),
-  );
-  const [hasUserInput, setHasUserInput] = useState(Boolean(loadedProgress || selectedTemplate));
+  const currentDecision = useDecisionStore((state) => state.currentDecision);
+  const currentStep = useDecisionStore((state) => state.currentStep);
+  const startDecision = useDecisionStore((state) => state.startDecision);
+  const resumeDecision = useDecisionStore((state) => state.resumeDecision);
+  const updateDecision = useDecisionStore((state) => state.updateDecision);
+  const setStoreStep = useDecisionStore((state) => state.setCurrentStep);
+  const removeProgress = useDecisionStore((state) => state.removeProgress);
   const [showValidation, setShowValidation] = useState(false);
+  const initialized = useRef(false);
+  const emptyDecision: DecisionDraft = {
+    id: '',
+    title: '',
+    description: '',
+    alternatives: [
+      { id: 'alternative-1', name: '', description: '' },
+      { id: 'alternative-2', name: '', description: '' },
+    ],
+    criteria: [
+      { id: 'criterion-1', name: '', description: '', weight: 50 },
+      { id: 'criterion-2', name: '', description: '', weight: 50 },
+    ],
+    scores: {},
+  };
+  const decision = currentDecision ?? emptyDecision;
+  const { id: decisionId, title, description, alternatives, criteria, scores } = decision;
   const weightTotal = criteria.reduce((sum, criterion) => sum + criterion.weight, 0);
 
   useEffect(() => {
-    if (!hasUserInput) return;
-    const progress: InProgressDecision = {
-      id: decisionId,
-      title,
-      description,
-      alternatives,
-      criteria,
-      scores,
-      currentStep,
-      updatedAt: new Date().toISOString(),
-    };
-    try {
-      const saved = JSON.parse(localStorage.getItem('whatif-in-progress-decisions') ?? '[]') as InProgressDecision[];
-      localStorage.setItem('whatif-in-progress-decisions', JSON.stringify([progress, ...saved.filter((item) => item.id !== decisionId)]));
-    } catch {
-      localStorage.setItem('whatif-in-progress-decisions', JSON.stringify([progress]));
+    if (initialized.current) return;
+    initialized.current = true;
+
+    const params = new URLSearchParams(window.location.search);
+    const editId = params.get('edit');
+    if (editId) {
+      const store = useDecisionStore.getState();
+      const completedDraft = store.completedDecisions.find((record) => record.id === editId)?.draft;
+      const existingDraft = completedDraft ?? (store.currentDecision?.id === editId ? store.currentDecision : null);
+      if (existingDraft) {
+        startDecision(existingDraft, 5, true);
+        return;
+      }
     }
-  }, [alternatives, criteria, currentStep, decisionId, description, hasUserInput, scores, title]);
+
+    const progressId = params.get('id');
+    if (progressId && resumeDecision(progressId)) return;
+
+    const template = loadTemplate();
+    const initialDraft: DecisionDraft = {
+      id: createId('decision'),
+      title: template?.title ?? '',
+      description: template?.description ?? '',
+      alternatives: emptyDecision.alternatives,
+      criteria: template?.criteria ?? emptyDecision.criteria,
+      scores: createDefaultScores(template?.criteria ?? emptyDecision.criteria, emptyDecision.alternatives),
+    };
+    startDecision(initialDraft, 1, Boolean(template));
+  }, [resumeDecision, startDecision]);
 
   const updateAlternative = (id: string, field: 'name' | 'description', value: string) => {
-    setHasUserInput(true);
-    setAlternatives((current) => current.map((item) => item.id === id ? { ...item, [field]: value } : item));
+    updateDecision({ alternatives: alternatives.map((item) => item.id === id ? { ...item, [field]: value } : item) });
     setShowValidation(false);
   };
 
   const addAlternative = () => {
-    setHasUserInput(true);
     const id = createId('alternative');
-    setAlternatives((current) => [...current, { id, name: '', description: '' }]);
-    setScores((current) => Object.fromEntries(Object.entries(current).map(([criterionId, row]) => [
-      criterionId,
-      { ...row, [id]: 3 },
-    ])));
+    updateDecision({
+      alternatives: [...alternatives, { id, name: '', description: '' }],
+      scores: Object.fromEntries(Object.entries(scores).map(([criterionId, row]) => [criterionId, { ...row, [id]: 3 }])),
+    });
   };
 
   const removeAlternative = (id: string) => {
-    setHasUserInput(true);
-    setAlternatives((current) => current.filter((item) => item.id !== id));
-    setScores((current) => Object.fromEntries(Object.entries(current).map(([criterionId, row]) => {
-      const nextRow = { ...row };
-      delete nextRow[id];
-      return [criterionId, nextRow];
-    })));
+    updateDecision({
+      alternatives: alternatives.filter((item) => item.id !== id),
+      scores: Object.fromEntries(Object.entries(scores).map(([criterionId, row]) => {
+        const nextRow = { ...row };
+        delete nextRow[id];
+        return [criterionId, nextRow];
+      })),
+    });
   };
 
   const updateCriterion = (id: string, field: 'name' | 'description', value: string) => {
-    setHasUserInput(true);
-    setCriteria((current) => current.map((item) => item.id === id ? { ...item, [field]: value } : item));
+    updateDecision({ criteria: criteria.map((item) => item.id === id ? { ...item, [field]: value } : item) });
     setShowValidation(false);
   };
 
   const addCriterion = () => {
-    setHasUserInput(true);
     const id = createId('criterion');
-    setCriteria((current) => [...current, { id, name: '', description: '', weight: 0 }]);
-    setScores((current) => ({
-      ...current,
-      [id]: Object.fromEntries(alternatives.map((alternative) => [alternative.id, 3])),
-    }));
-  };
-
-  const removeCriterion = (id: string) => {
-    setHasUserInput(true);
-    setCriteria((current) => normalizeWeights(current.filter((item) => item.id !== id)));
-    setScores((current) => {
-      const next = { ...current };
-      delete next[id];
-      return next;
+    updateDecision({
+      criteria: [...criteria, { id, name: '', description: '', weight: 0 }],
+      scores: { ...scores, [id]: Object.fromEntries(alternatives.map((alternative) => [alternative.id, 3])) },
     });
   };
 
+  const removeCriterion = (id: string) => {
+    const nextScores = { ...scores };
+    delete nextScores[id];
+    updateDecision({ criteria: normalizeWeights(criteria.filter((item) => item.id !== id)), scores: nextScores });
+  };
+
   const updateScore = (criterionId: string, alternativeId: string, score: number) => {
-    setHasUserInput(true);
-    setScores((current) => ({
-      ...current,
-      [criterionId]: { ...current[criterionId], [alternativeId]: score },
-    }));
+    updateDecision({ scores: { ...scores, [criterionId]: { ...scores[criterionId], [alternativeId]: score } } });
   };
 
   const goToNextStep = () => {
@@ -204,14 +147,14 @@ const DecisionPage = () => {
 
     setShowValidation(false);
     if (currentStep < 5) {
-      setCurrentStep((step) => step + 1);
+      setStoreStep(currentStep + 1);
       return;
     }
 
-    const draft = { id: decisionId, title: title.trim(), description: description.trim(), alternatives, criteria, scores };
-    sessionStorage.setItem('whatif-current-decision', JSON.stringify(draft));
-    const inProgress = JSON.parse(localStorage.getItem('whatif-in-progress-decisions') ?? '[]') as InProgressDecision[];
-    localStorage.setItem('whatif-in-progress-decisions', JSON.stringify(inProgress.filter((item) => item.id !== decisionId)));
+    const draft = { ...decision, title: title.trim(), description: description.trim() };
+    updateDecision(draft);
+    const isEditingCompleted = useDecisionStore.getState().completedDecisions.some((record) => record.id === decisionId);
+    if (!isEditingCompleted) removeProgress(decisionId);
     window.location.assign('/result');
   };
 
@@ -222,8 +165,8 @@ const DecisionPage = () => {
           title={title}
           description={description}
           showTitleError={showValidation && !title.trim()}
-          onTitleChange={(value) => { setTitle(value); setHasUserInput(true); setShowValidation(false); }}
-          onDescriptionChange={(value) => { setDescription(value); setHasUserInput(true); }}
+          onTitleChange={(value) => { updateDecision({ title: value }); setShowValidation(false); }}
+          onDescriptionChange={(value) => updateDecision({ description: value })}
         />
       );
     }
@@ -255,8 +198,8 @@ const DecisionPage = () => {
           <WeightSlider
             criteria={criteria}
             allowManualInput
-            onChange={(id, value) => { setHasUserInput(true); setCriteria((current) => current.map((criterion) => criterion.id === id ? { ...criterion, weight: value } : criterion)); }}
-            onRangeChange={(id, value) => { setHasUserInput(true); setCriteria((current) => distributeWeight(current, id, value)); }}
+            onChange={(id, value) => updateDecision({ criteria: criteria.map((criterion) => criterion.id === id ? { ...criterion, weight: value } : criterion) })}
+            onRangeChange={(id, value) => updateDecision({ criteria: distributeWeight(criteria, id, value) })}
           />
         </section>
       );
@@ -280,7 +223,7 @@ const DecisionPage = () => {
         <section className="decision-form-card">
           {renderStep()}
           <div className="decision-form-actions">
-            <button className="decision-back-button" type="button" onClick={() => { setShowValidation(false); setCurrentStep((step) => Math.max(1, step - 1)); }} disabled={currentStep === 1}>
+            <button className="decision-back-button" type="button" onClick={() => { setShowValidation(false); setStoreStep(Math.max(1, currentStep - 1)); }} disabled={currentStep === 1}>
               이전
             </button>
             <button

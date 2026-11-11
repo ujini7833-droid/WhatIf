@@ -1,6 +1,10 @@
 
+import { useState } from 'react';
+import type { DecisionRecord, InProgressDecision } from '../../../types/decision';
 import './RecentDecisions.css';
 import DecisionCard from './DecisionCard';
+import { useDecisionStore } from '../../../store/decisionStore';
+import { ClipboardList, Plus } from 'lucide-react';
 
 interface RecentDecision {
     id: string;
@@ -10,53 +14,51 @@ interface RecentDecision {
     status: 'completed' | 'in-progress';
 }
 
-interface StoredDecision {
-    id: string;
-    title?: string;
-    description?: string;
-    date?: string;
-    updatedAt?: string;
-    draft?: unknown;
-    status?: 'completed';
-}
-
 const formatDate = (date?: string) => {
     if (!date) return new Date().toLocaleDateString('sv-SE').replaceAll('-', '.');
     return date.slice(0, 10).replaceAll('-', '.');
 };
 
-const getRecentDecisions = (): RecentDecision[] => {
-    try {
-        const inProgress = JSON.parse(
-            localStorage.getItem('whatif-in-progress-decisions') ?? '[]',
-        ) as StoredDecision[];
-        const completed = JSON.parse(
-            localStorage.getItem('whatif-decisions') ?? '[]',
-        ) as StoredDecision[];
-        const activeCards: RecentDecision[] = inProgress.map((decision) => ({
+const getRecentDecisions = (inProgress: InProgressDecision[], completed: DecisionRecord[]): RecentDecision[] => {
+    const completedIds = new Set(completed.map((decision) => decision.id));
+    const activeCards: RecentDecision[] = inProgress
+        .filter((decision) => !completedIds.has(decision.id))
+        .map((decision) => ({
             id: decision.id,
-            title: decision.title?.trim() || '제목 없는 결정',
-            description: decision.description?.trim() || '작성 중인 결정',
+            title: decision.title.trim() || '제목 없는 결정',
+            description: decision.description.trim() || '작성 중인 결정',
             date: formatDate(decision.updatedAt),
             status: 'in-progress',
         }));
-        const completedCards: RecentDecision[] = completed
-            .filter((decision) => decision.draft)
-            .map((decision) => ({
-                id: decision.id,
-                title: decision.title ?? '제목 없는 결정',
-                description: decision.description ?? '',
-                date: formatDate(decision.date),
-                status: 'completed',
-            }));
-        return [...activeCards, ...completedCards].slice(0, 4);
-    } catch {
-        return [];
-    }
+    const completedCards: RecentDecision[] = completed
+        .filter((decision) => decision.draft)
+        .map((decision) => ({
+            id: decision.id,
+            title: decision.title,
+            description: decision.description,
+            date: formatDate(decision.date),
+            status: 'completed',
+        }));
+
+    return [...activeCards, ...completedCards].slice(0, 4);
 };
 
 const RecentDecisions = () => {
-    const recentDecisions = getRecentDecisions();
+    const removeDecision = useDecisionStore((state) => state.removeDecision);
+    const [removingIds, setRemovingIds] = useState<string[]>([]);
+    const inProgress = useDecisionStore((state) => state.inProgressDecisions);
+    const completed = useDecisionStore((state) => state.completedDecisions);
+    const recentDecisions = getRecentDecisions(inProgress, completed);
+
+    const handleDeleteDecision = (id: string) => {
+        setRemovingIds((current) => [...current, id]);
+        const delay = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 260;
+
+        window.setTimeout(() => {
+            removeDecision(id);
+            setRemovingIds((current) => current.filter((removingId) => removingId !== id));
+        }, delay);
+    };
 
     return (
         <section className="recent-decisions" id="decisions">
@@ -84,16 +86,44 @@ const RecentDecisions = () => {
             </div>
 
             <div className="recent-decisions-list">
-                {recentDecisions.map((decision) => (
-                     <DecisionCard
-                        key={decision.id}
-                        id={decision.id}
-                        title={decision.title}
-                        description={decision.description}
-                        date={decision.date}
-                        status={decision.status}
-                    />
-                ))}
+                {recentDecisions.length > 0 ? (
+                    recentDecisions.map((decision) => (
+                        <DecisionCard
+                            key={decision.id}
+                            id={decision.id}
+                            title={decision.title}
+                            description={decision.description}
+                            date={decision.date}
+                            status={decision.status}
+                            isRemoving={removingIds.includes(decision.id)}
+                            onDelete={handleDeleteDecision}
+                        />
+                    ))
+                ) : (
+                    <div className="recent-decisions-empty">
+                        <div className="recent-decisions-empty-icon">
+                            <ClipboardList size={28} strokeWidth={1.5} />
+                        </div>
+
+                        <p className="recent-decisions-empty-title">
+                            아직 생성된 결정이 없어요.
+                        </p>
+
+                        <p className="recent-decisions-empty-description">
+                            고민하고 있는 선택이 있다면,
+                            <br />
+                            지금 바로 새로운 결정을 만들어보세요.
+                        </p>
+
+                        <a
+                            className="recent-decisions-empty-button"
+                            href="/decision"
+                        >
+                            <Plus size={16} strokeWidth={3} />
+                            새 결정 만들기
+                        </a>
+                    </div>
+                )}
             </div>
         </section>
     );

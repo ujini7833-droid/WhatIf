@@ -1,12 +1,9 @@
+import type { Alternative } from '../../types/decision';
 import './AlternativeStep.css';
 import './DecisionEntry.css';
 import './DecisionInfoStep.css';
 
-export interface Alternative {
-  id: string;
-  name: string;
-  description: string;
-}
+export type { Alternative } from '../../types/decision';
 
 interface AlternativeStepProps {
   alternatives: Alternative[];

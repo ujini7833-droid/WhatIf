@@ -1,4 +1,4 @@
-import type { Criterion } from '../components/decision/CriteriaEditor';
+import type { Criterion } from '../types/decision';
 
 export interface DecisionTemplate {
   id: string;

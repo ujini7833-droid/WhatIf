@@ -1,13 +1,9 @@
+import type { Criterion } from '../../types/decision';
 import './CriteriaEditor.css';
 import './DecisionEntry.css';
 import './DecisionInfoStep.css';
 
-export interface Criterion {
-  id: string;
-  name: string;
-  description: string;
-  weight: number;
-}
+export type { Criterion } from '../../types/decision';
 
 interface CriteriaEditorProps {
   criteria: Criterion[];
@@ -39,7 +35,7 @@ const CriteriaEditor = ({ criteria, onChange, onAdd, onRemove }: CriteriaEditorP
                 className="decision-info-input"
                 value={criterion.name}
                 onChange={(event) => onChange(criterion.id, 'name', event.target.value)}
-                placeholder="예: 비용"
+                placeholder={index === 0 ? '비용' : index === 1 ? '편의성' : '평가 기준'}
                 maxLength={40}
               />
             </div>
@@ -50,7 +46,7 @@ const CriteriaEditor = ({ criteria, onChange, onAdd, onRemove }: CriteriaEditorP
                 className="decision-info-input"
                 value={criterion.description}
                 onChange={(event) => onChange(criterion.id, 'description', event.target.value)}
-                placeholder="예: 전체 여행 경비"
+                placeholder={index === 0 ? '예: 전체 여행 경비' : index === 1 ? '예: 이용하기 편리한 정도' : '예: 평가 기준에 대한 설명'}
                 maxLength={100}
               />
             </div>

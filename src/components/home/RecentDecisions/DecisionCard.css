@@ -1,7 +1,5 @@
 .decision-card {
     display: flex;
-    color: inherit;
-    text-decoration: none;
     flex-direction: column;
     min-width: 0;
     min-height: 210px;
@@ -27,6 +25,25 @@
     border-color: rgba(155, 92, 255, 0.4);
     box-shadow: 0 12px 35px rgba(0, 0, 0, 0.2),
         0 0 24px rgba(155, 92, 255, 0.06);
+}
+
+.decision-card.is-removing {
+    pointer-events: none;
+    animation: decision-card-dismiss 260ms ease-in forwards;
+}
+
+@keyframes decision-card-dismiss {
+    to {
+        opacity: 0;
+        filter: blur(3px);
+        transform: translateY(-8px) scale(0.96);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .decision-card.is-removing {
+        animation-duration: 1ms;
+    }
 }
 
 .decision-card-top {
@@ -61,6 +78,7 @@
     color: #666b83;
     font-size: 11px;
     white-space: nowrap;
+    transform: translateX(5px);
 }
 
 .decision-card-content {
@@ -87,6 +105,8 @@
 
 .decision-card-footer {
     display: flex;
+    color: inherit;
+    text-decoration: none;
     align-items: center;
     justify-content: space-between;
     gap: 12px;
@@ -107,8 +127,159 @@
     transition: transform 0.2s ease;
 }
 
-.decision-card:hover .decision-card-arrow {
+.decision-card:hover .decision-card-arrow,
+.decision-card-footer:focus-visible .decision-card-arrow {
     transform: translateX(4px);
+}
+
+.decision-card-footer:focus-visible {
+    outline: 2px solid #a98cff;
+    outline-offset: 4px;
+}
+
+/* 날짜 및 삭제 버튼 */
+.decision-card-top-actions {
+    display: flex;
+    align-items: center;
+    gap: 0px;
+}
+
+.decision-card-delete {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 30px;
+    height: 30px;
+
+    color: #8589a3;
+    background: transparent;
+    border: none;
+    border-radius: 8px;
+
+    cursor: pointer;
+    transform: translate(10px, -0.7px);
+    transition: all 0.2s ease;
+}
+
+.decision-card-delete:hover {
+    color: #ee8787;
+    background: rgba(238, 135, 135, 0.1);
+}
+
+/* 모달 배경 */
+.decision-delete-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(6px);
+}
+
+/* 모달 */
+.decision-delete-modal {
+    width: 100%;
+    max-width: 400px;
+    padding: 28px;
+
+    text-align: center;
+    background: #0d1020;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 20px;
+
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+}
+
+.decision-delete-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 50px;
+    height: 50px;
+    margin: 0 auto 12px;
+
+    color: #ee8787;
+    background: rgba(238, 135, 135, 0.1);
+    border-radius: 50%;
+}
+
+.decision-delete-title {
+    margin: 0;
+    color: #f5f3ff;
+    font-family: Pretendard-Regular, sans-serif;
+    font-size: 18px;
+    line-height: 1.4;
+    letter-spacing: -0.02em;
+}
+
+.decision-delete-name {
+    margin-top: 22px;
+    padding: 12px 14px;
+    background: linear-gradient(135deg, rgba(238, 135, 135, 0.1), rgba(155, 92, 255, 0.08));
+    border: 1px solid rgba(238, 135, 135, 0.2);
+    border-radius: 12px;
+}
+
+.decision-delete-name strong {
+    display: block;
+    overflow-wrap: anywhere;
+    color: #fff;
+    font-family: Pretendard-SemiBold, sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.decision-delete-message {
+    margin-top: 8px;
+    color: #a3a7bd;
+    font-size: 12px;
+    line-height: 1.7;
+}
+
+/* 모달 버튼 */
+.decision-delete-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 28px;
+}
+
+.decision-delete-actions button {
+    flex: 1;
+    height: 38px;
+
+    font-family: Pretendard-Regular, sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.decision-delete-cancel {
+    color: #a9adc2;
+    background: #1a1e32;
+}
+
+.decision-delete-cancel:hover {
+    background: #252a42;
+}
+
+.decision-delete-confirm {
+    color: #fff;
+    background: #c94f5f;
+}
+
+.decision-delete-confirm:hover {
+    background: #e05b6c;
 }
 
 @media (max-width: 640px) {

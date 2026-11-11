@@ -1,93 +1,33 @@
 import { useState } from 'react';
+import { ChevronLeft } from 'lucide-react';
 import Header from '../components/common/Header/Header';
-import type { Alternative } from '../components/decision/AlternativeStep';
-import type { Criterion } from '../components/decision/CriteriaEditor';
-import ScoreChart, { type ResultScore } from '../components/decision/ScoreChart';
+import type { Criterion, DecisionRecord } from '../types/decision';
+import { useDecisionStore } from '../store/decisionStore';
+import { calculateResults, distributeWeight } from '../utils/calculateScore';
+import ScoreChart from '../components/decision/ScoreChart';
 import WeightSlider from '../components/decision/WeightSlider';
 import '../components/decision/DecisionInfoStep.css';
 import checkIcon from '../assets/check.svg';
 import './DecisionLayout.css';
 import './ResultPage.css';
 
-interface DecisionDraft {
-  id: string;
-  title: string;
-  description: string;
-  alternatives: Alternative[];
-  criteria: Criterion[];
-  scores: Record<string, Record<string, number>>;
-}
-
-interface DecisionRecord {
-  id: string;
-  draft?: DecisionDraft;
-  title: string;
-  description: string;
-  selectedAlternative: string;
-  finalScore: number;
-  date: string;
-  status: 'completed';
-}
-
-const loadDraft = (): DecisionDraft | null => {
-  try {
-    const selectedId = new URLSearchParams(window.location.search).get('id');
-    if (selectedId) {
-      const records = JSON.parse(localStorage.getItem('whatif-decisions') ?? '[]') as DecisionRecord[];
-      const selectedRecord = records.find((record) => record.id === selectedId);
-      if (selectedRecord?.draft) return selectedRecord.draft;
-      const current = sessionStorage.getItem('whatif-current-decision');
-      const currentDraft = current ? JSON.parse(current) as DecisionDraft : null;
-      return currentDraft?.id === selectedId ? currentDraft : null;
-    }
-
-    const value = sessionStorage.getItem('whatif-current-decision');
-    return value ? JSON.parse(value) as DecisionDraft : null;
-  } catch {
-    return null;
-  }
-};
-
-const calculateResults = (
-  draft: DecisionDraft,
-  criteria: Criterion[] = draft.criteria,
-): ResultScore[] => draft.alternatives
-  .map((alternative) => ({
-    id: alternative.id,
-    name: alternative.name,
-    score: criteria.reduce(
-      (total, criterion) => total + ((draft.scores[criterion.id]?.[alternative.id] ?? 3) * criterion.weight) / 100,
-      0,
-    ),
-  }))
-  .sort((first, second) => second.score - first.score);
-
-const distributeWeight = (criteria: Criterion[], targetId: string, value: number) => {
-  const targetWeight = Math.max(0, Math.min(100, Math.round(value)));
-  const others = criteria.filter((criterion) => criterion.id !== targetId);
-  const total = others.reduce((sum, criterion) => sum + criterion.weight, 0);
-  let distributed = 0;
-
-  return criteria.map((criterion) => {
-    if (criterion.id === targetId) return { ...criterion, weight: targetWeight };
-    const index = others.findIndex((item) => item.id === criterion.id);
-    const weight = index === others.length - 1
-      ? 100 - targetWeight - distributed
-      : total > 0
-        ? Math.floor(((100 - targetWeight) * criterion.weight) / total)
-        : Math.floor((100 - targetWeight) / Math.max(others.length, 1));
-    distributed += weight;
-    return { ...criterion, weight };
-  });
-};
-
 const ResultPage = () => {
-  const [draft] = useState(loadDraft);
+  const currentDecision = useDecisionStore((state) => state.currentDecision);
+  const completedDecisions = useDecisionStore((state) => state.completedDecisions);
+  const completeDecision = useDecisionStore((state) => state.completeDecision);
+  const requestedId = new URLSearchParams(window.location.search).get('id');
+  const completedRecord = requestedId
+    ? completedDecisions.find((record) => record.id === requestedId)
+    : undefined;
+  const draft = requestedId
+    ? (currentDecision?.id === requestedId ? currentDecision : completedRecord?.draft ?? null)
+    : currentDecision;
   const [simulationCriteria, setSimulationCriteria] = useState<Criterion[]>(() => draft?.criteria ?? []);
   const [selectedAlternative, setSelectedAlternative] = useState('');
   const [reason, setReason] = useState('');
   const [showError, setShowError] = useState(false);
   const [savedRecord, setSavedRecord] = useState<DecisionRecord | null>(null);
+  const visibleSavedRecord = savedRecord ?? (draft ? completedDecisions.find((record) => record.id === draft.id) ?? null : null);
   const view = window.location.pathname === '/what-if'
     ? 'what-if'
     : window.location.pathname === '/complete'
@@ -139,12 +79,7 @@ const ResultPage = () => {
       date: new Date().toLocaleDateString('sv-SE').replaceAll('-', '.'),
       status: 'completed',
     };
-    try {
-      const saved = JSON.parse(localStorage.getItem('whatif-decisions') ?? '[]') as DecisionRecord[];
-      localStorage.setItem('whatif-decisions', JSON.stringify([record, ...saved.filter((item) => item.id !== record.id)]));
-    } catch {
-      localStorage.setItem('whatif-decisions', JSON.stringify([record]));
-    }
+    completeDecision(record);
     setSavedRecord(record);
     setShowError(false);
   };
@@ -154,19 +89,24 @@ const ResultPage = () => {
       <Header />
       <main className="decision-page outcome-page">
         <div className="outcome-heading">
-          <p className="decision-info-eyebrow">{view === 'what-if' ? 'WHAT-IF SIMULATION' : view === 'complete' ? 'DECISION COMPLETE' : 'DECISION RESULTS'}</p>
+          <div className="outcome-eyebrow-row">
+            <a className="outcome-edit-link" href={`/decision?edit=${encodeURIComponent(draft.id)}`} aria-label="결정 수정">
+              <ChevronLeft size={20} strokeWidth={3} aria-hidden="true" />
+            </a>
+            <p className="decision-info-eyebrow">{view === 'what-if' ? 'WHAT-IF SIMULATION' : view === 'complete' ? 'DECISION COMPLETE' : 'DECISION RESULTS'}</p>
+          </div>
           <h1>{draft.title}</h1>
           <p>{draft.description || pageDescription}</p>
         </div>
 
         <nav className="outcome-nav" aria-label="결정 결과 메뉴">
-          <a className={view === 'results' ? 'active' : ''} href="/result">결과</a>
-          <a className={view === 'what-if' ? 'active' : ''} href="/what-if">What-if</a>
-          <a className={view === 'complete' ? 'active' : ''} href="/complete">결정 완료</a>
+          <a className={view === 'results' ? 'active' : ''} href={`/result?id=${encodeURIComponent(draft.id)}`}>결과</a>
+          <a className={view === 'what-if' ? 'active' : ''} href={`/what-if?id=${encodeURIComponent(draft.id)}`}>What-if</a>
+          <a className={view === 'complete' ? 'active' : ''} href={`/complete?id=${encodeURIComponent(draft.id)}`}>결정 완료</a>
         </nav>
 
         <section className="decision-form-card outcome-card">
-          {!savedRecord && (
+          {!visibleSavedRecord && (
             <div className="outcome-section-heading">
               <div>
                 <h2>{pageTitle}</h2>
@@ -191,8 +131,8 @@ const ResultPage = () => {
               </div>
               <p className="decision-result-note">총점 = Σ(기준별 점수 × 가중치). 점수는 결정을 돕는 참고 자료예요.</p>
               <div className="outcome-actions">
-                <a className="decision-next-button" href="/what-if">가중치 시뮬레이션 <span aria-hidden="true">→</span></a>
-                <a className="decision-secondary-link" href="/complete">최종 선택 확정하기</a>
+                <a className="decision-next-button" href={`/what-if?id=${encodeURIComponent(draft.id)}`}>가중치 시뮬레이션 <span aria-hidden="true">→</span></a>
+                <a className="decision-secondary-link" href={`/complete?id=${encodeURIComponent(draft.id)}`}>최종 선택 확정하기</a>
               </div>
             </>
           )}
@@ -215,20 +155,20 @@ const ResultPage = () => {
                       return <p key={result.id}><span>{result.name}</span><strong>{change === 0 ? '순위 유지' : `${Math.abs(change)}순위 ${change > 0 ? '상승' : '하락'}`}</strong></p>;
                     })}
                   </div>
-                  <a className="decision-next-button" href="/complete">최종 선택 확정하기 <span aria-hidden="true">→</span></a>
+                  <a className="decision-next-button" href={`/complete?id=${encodeURIComponent(draft.id)}`}>최종 선택 확정하기 <span aria-hidden="true">→</span></a>
                 </div>
               </div>
             </div>
           )}
 
           {view === 'complete' && (
-            savedRecord ? (
+            visibleSavedRecord ? (
               <div className="decision-complete-state">
                 <span className="decision-complete-check" aria-hidden="true">
                   <img src={checkIcon} alt="" />
                 </span>
                 <h2>결정을 기록했어요.</h2>
-                <p>{savedRecord.title} · 최종 선택: {savedRecord.selectedAlternative}</p>
+                <p>{visibleSavedRecord.title} · 최종 선택: {visibleSavedRecord.selectedAlternative}</p>
                 <button className="decision-home-button" type="button" onClick={() => window.location.assign('/')}>
                   홈으로 돌아가기 <span aria-hidden="true">→</span>
                 </button>
