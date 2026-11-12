@@ -29,9 +29,7 @@ const DecisionPage = () => {
   const updateDecision = useDecisionStore((state) => state.updateDecision);
   const setStoreStep = useDecisionStore((state) => state.setCurrentStep);
   const removeProgress = useDecisionStore((state) => state.removeProgress);
-  const saveProgress = useDecisionStore((state) => state.saveProgress);
   const [showValidation, setShowValidation] = useState(false);
-  const [showSavedMessage, setShowSavedMessage] = useState(false);
   const initialized = useRef(false);
   const emptyDecision: DecisionDraft = {
     id: '',
@@ -68,12 +66,6 @@ const DecisionPage = () => {
           ? '가중치 합계를 100%로 맞춰주세요.'
           : '';
   const canAdvance = validationMessage === '';
-
-  const handleSaveProgress = () => {
-    saveProgress();
-    setShowSavedMessage(true);
-    window.setTimeout(() => setShowSavedMessage(false), 3000);
-  };
 
   useEffect(() => {
     if (initialized.current) return;
