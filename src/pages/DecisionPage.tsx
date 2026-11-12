@@ -70,6 +70,13 @@ const DecisionPage = () => {
   const canAdvance = validationMessage === '';
 
   const handleSaveProgress = () => {
+    const hasInput = title.trim()
+      || description.trim()
+      || alternatives.some((alternative) => alternative.name.trim() || alternative.description.trim())
+      || criteria.some((criterion) => criterion.name.trim() || criterion.description.trim())
+      || Object.values(scores).some((alternativeScores) => Object.keys(alternativeScores).length > 0);
+    if (!hasInput) return;
+
     saveProgress();
     setShowSavedMessage(true);
     window.setTimeout(() => setShowSavedMessage(false), 3000);

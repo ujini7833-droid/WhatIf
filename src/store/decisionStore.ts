@@ -39,7 +39,19 @@ const readLegacyData = () => {
   }
 };
 
+const hasDecisionInput = (decision: DecisionDraft) => (
+  decision.title.trim().length > 0
+  || decision.description.trim().length > 0
+  || decision.alternatives.some((alternative) => alternative.name.trim() || alternative.description.trim())
+  || decision.criteria.some((criterion) => criterion.name.trim() || criterion.description.trim())
+  || Object.values(decision.scores).some((alternativeScores) => Object.keys(alternativeScores).length > 0)
+);
+
 const upsertProgress = (items: InProgressDecision[], decision: DecisionDraft, currentStep: number) => {
+  if (!hasDecisionInput(decision)) {
+    return items.filter((item) => item.id !== decision.id);
+  }
+
   const previous = items.find((item) => item.id === decision.id);
   const progress: InProgressDecision = {
     ...decision,
