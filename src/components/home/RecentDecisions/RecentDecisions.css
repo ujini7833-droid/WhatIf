@@ -48,12 +48,14 @@
     color: #a98cff;
     font-family: inherit;
     font-size: 13px;
+    text-decoration: none;
     cursor: pointer;
     transition: color 0.2s ease;
 }
 
 .recent-decisions-more:hover {
     color: #20e0d0;
+    text-decoration: none;
 }
 
 .recent-decisions-list {

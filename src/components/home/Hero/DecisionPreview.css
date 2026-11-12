@@ -152,10 +152,9 @@
     background: rgba(255, 255, 255, 0.04);
 
     color: #a98cff;
-
     font-family: 'Pretendard-Medium', sans-serif;
     font-size: 16px;
-
+    text-decoration: none;
     cursor: pointer;
 
     transition:
@@ -206,7 +205,7 @@
 }
 
 
-.decision-preview-footer button {
+.decision-preview-footer a {
     padding: 0;
 
     border: none;
@@ -219,13 +218,14 @@
     font-size: 11px;
     font-weight: 500;
 
+    text-decoration: none;
     cursor: pointer;
 
     transition: color 0.2s ease;
 }
 
 
-.decision-preview-footer button:hover {
+.decision-preview-footer a:hover {
     color: #c1a9ff;
 }
 

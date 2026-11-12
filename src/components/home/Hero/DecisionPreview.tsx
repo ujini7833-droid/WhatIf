@@ -1,24 +1,24 @@
+import { useDecisionStore } from '../../../store/decisionStore';
+import { calculateResults } from '../../../utils/calculateScore';
+import { getLatestDecision, hasDecisionChartData } from '../../../utils/getLatestDecision';
 import RadarChart from './RadarChart';
 import RankingItem from './RankingItem';
 import './DecisionPreview.css';
 
-interface Ranking {
-    rank: number;
-    name: string;
-    score: number;
-}
-
-const rankings: Ranking[] = [
-    { rank: 1, name: '강릉', score: 4.3 },
-    { rank: 2, name: '춘천', score: 4.2 },
-    { rank: 3, name: '부산', score: 3.7 },
-];
-
 const DecisionPreview = () => {
+    const inProgress = useDecisionStore((state) => state.inProgressDecisions);
+    const completed = useDecisionStore((state) => state.completedDecisions);
+    const currentDecision = useDecisionStore((state) => state.currentDecision);
+    const decision = getLatestDecision(inProgress, completed, currentDecision);
+
+    if (!decision || !hasDecisionChartData(decision)) return null;
+
+    const rankings = calculateResults(decision);
+
     return (
         <div className="decision-preview">
             <div className="decision-preview-chart">
-                <RadarChart />
+                <RadarChart decision={decision} />
             </div>
 
             <div className="decision-preview-card">
@@ -28,25 +28,23 @@ const DecisionPreview = () => {
                             YOUR DECISION
                         </span>
 
-                        <h2>
-                            11월 여행은 어디로?
-                        </h2>
+                        <h2>{decision.title}</h2>
                     </div>
 
-                    <button
+                    <a
                         className="decision-preview-more"
-                        type="button"
-                        aria-label="View more"
+                        href={`/result?id=${encodeURIComponent(decision.id)}`}
+                        aria-label="결과 자세히 보기"
                     >
                         →
-                    </button>
+                    </a>
                 </div>
 
                 <div className="decision-preview-ranking">
-                    {rankings.map((item) => (
+                    {rankings.slice(0, 3).map((item, index) => (
                         <RankingItem
-                            key={item.name}
-                            rank={item.rank}
+                            key={item.id}
+                            rank={index + 1}
                             name={item.name}
                             score={item.score}
                         />
@@ -55,12 +53,14 @@ const DecisionPreview = () => {
 
                 <div className="decision-preview-footer">
                     <span>
-                        5개의 기준으로 비교했어요.
+                        {decision.criteria.length}개의 기준으로 비교했어요.
                     </span>
 
-                    <button type="button">
+                    <a
+                        href={`/result?id=${encodeURIComponent(decision.id)}`}
+                    >
                         자세히 보기 →
-                    </button>
+                    </a>
                 </div>
             </div>
         </div>
