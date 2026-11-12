@@ -29,7 +29,7 @@ const CriteriaEditor = ({ criteria, onChange, onAdd, onRemove }: CriteriaEditorP
           </div>
           <div className="decision-criterion-fields">
             <div>
-              <label className="decision-info-label" htmlFor={`criterion-name-${criterion.id}`}>기준</label>
+              <label className="decision-info-label" htmlFor={`criterion-name-${criterion.id}`}>기준 <span className="decision-info-required" aria-hidden="true">*</span></label>
               <input
                 id={`criterion-name-${criterion.id}`}
                 className="decision-info-input"
