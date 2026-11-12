@@ -24,39 +24,8 @@ WhatIf는 여러 선택지를 객관적인 기준으로 비교하고, 나에게 
 - 브라우저를 새로고침해도 작성한 결정 기록을 유지할 수 있습니다.
 - Zustand를 활용한 전역 상태 관리, LocalStorage 기반 데이터 유지
 
-🛠 Tech Stack
-Category
+👩‍💻 Developer
 
-Technology
+WhatIf — Personal Project
 
-Language
-
-TypeScript
-
-Library
-
-React
-
-Build Tool
-
-Vite
-
-State Management
-
-Zustand
-
-Data Persistence
-
-LocalStorage
-
-Styling
-
-CSS
-
-Chart
-
-Recharts
-
-Icon
-
-Lucide React
+GitHub: ujini7833-droid
