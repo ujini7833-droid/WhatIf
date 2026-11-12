@@ -57,3 +57,12 @@ export const normalizeWeights = (criteria: Criterion[]) => {
 
 export const createEmptyScores = (criteria: Criterion[]) =>
   Object.fromEntries(criteria.map((criterion) => [criterion.id, {}]));
+
+
+export const getCompetitionRank = (results: ResultScore[], index: number) => {
+  const targetScore = results[index]?.score.toFixed(2);
+  if (targetScore === undefined) return index + 1;
+
+  const firstMatchingIndex = results.findIndex((result) => result.score.toFixed(2) === targetScore);
+  return firstMatchingIndex + 1;
+};

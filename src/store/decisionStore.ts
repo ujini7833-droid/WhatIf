@@ -76,14 +76,40 @@ export const useDecisionStore = create<DecisionStore>()(persist((set, get) => ({
     return true;
   },
 
-  updateDecision: (updates) => set((state) => {
-    if (!state.currentDecision) return state;
-    const currentDecision = { ...state.currentDecision, ...updates };
-    return {
-      currentDecision,
-      inProgressDecisions: upsertProgress(state.inProgressDecisions, currentDecision, state.currentStep),
-    };
-  }),
+  updateDecision: (updates) => {
+    let invalidatedCompletionId: string | null = null;
+
+    set((state) => {
+      if (!state.currentDecision) return state;
+      const currentDecision = { ...state.currentDecision, ...updates };
+      const hasChanges = (Object.keys(updates) as Array<keyof DecisionDraft>).some((key) => (
+        JSON.stringify(state.currentDecision?.[key]) !== JSON.stringify(updates[key])
+      ));
+      const wasCompleted = hasChanges
+        && state.completedDecisions.some((record) => record.id === currentDecision.id);
+      if (wasCompleted) invalidatedCompletionId = currentDecision.id;
+
+      return {
+        currentDecision,
+        inProgressDecisions: upsertProgress(state.inProgressDecisions, currentDecision, state.currentStep),
+        completedDecisions: wasCompleted
+          ? state.completedDecisions.filter((record) => record.id !== currentDecision.id)
+          : state.completedDecisions,
+      };
+    });
+
+    if (invalidatedCompletionId) {
+      try {
+        const legacyCompleted = JSON.parse(localStorage.getItem('whatif-decisions') ?? '[]') as DecisionRecord[];
+        localStorage.setItem(
+          'whatif-decisions',
+          JSON.stringify(legacyCompleted.filter((record) => record.id !== invalidatedCompletionId)),
+        );
+      } catch {
+        // Zustand's persisted state remains the source of truth if legacy storage is unavailable.
+      }
+    }
+  },
 
   setCurrentStep: (currentStep) => set((state) => ({
     currentStep,
