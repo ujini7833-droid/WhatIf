@@ -35,6 +35,5 @@ export interface DecisionRecord {
   selectedAlternative: string;
   finalScore: number;
   date: string;
-  updatedAt?: string;
   status: 'completed';
 }

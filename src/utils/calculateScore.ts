@@ -1,4 +1,4 @@
-import type { Criterion, DecisionDraft } from '../types/decision';
+import type { Alternative, Criterion, DecisionDraft } from '../types/decision';
 
 export interface ResultScore {
   id: string;
@@ -55,5 +55,8 @@ export const normalizeWeights = (criteria: Criterion[]) => {
   });
 };
 
-export const createEmptyScores = (criteria: Criterion[]) =>
-  Object.fromEntries(criteria.map((criterion) => [criterion.id, {}]));
+export const createDefaultScores = (criteria: Criterion[], alternatives: Alternative[]) =>
+  Object.fromEntries(criteria.map((criterion) => [
+    criterion.id,
+    Object.fromEntries(alternatives.map((alternative) => [alternative.id, 3])),
+  ]));

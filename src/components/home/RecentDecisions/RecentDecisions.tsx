@@ -4,7 +4,6 @@ import type { DecisionRecord, InProgressDecision } from '../../../types/decision
 import './RecentDecisions.css';
 import DecisionCard from './DecisionCard';
 import { useDecisionStore } from '../../../store/decisionStore';
-import { formatKoreanDate } from '../../../utils/formatKoreanDate';
 import { ClipboardList, Plus } from 'lucide-react';
 
 interface RecentDecision {
@@ -13,16 +12,11 @@ interface RecentDecision {
     description: string;
     date: string;
     status: 'completed' | 'in-progress';
-    modifiedTimestamp: number;
 }
 
-const formatDate = (date?: string) => (
-    formatKoreanDate(date) || formatKoreanDate(new Date().toISOString())
-);
-
-const getModifiedTimestamp = (updatedAt?: string, fallbackDate?: string) => {
-    const timestamp = Date.parse(updatedAt ?? fallbackDate?.replaceAll('.', '-') ?? '');
-    return Number.isNaN(timestamp) ? 0 : timestamp;
+const formatDate = (date?: string) => {
+    if (!date) return new Date().toLocaleDateString('sv-SE').replaceAll('-', '.');
+    return date.slice(0, 10).replaceAll('-', '.');
 };
 
 const getRecentDecisions = (inProgress: InProgressDecision[], completed: DecisionRecord[]): RecentDecision[] => {
@@ -35,7 +29,6 @@ const getRecentDecisions = (inProgress: InProgressDecision[], completed: Decisio
             description: decision.description.trim() || '작성 중인 결정',
             date: formatDate(decision.updatedAt),
             status: 'in-progress',
-            modifiedTimestamp: getModifiedTimestamp(decision.updatedAt),
         }));
     const completedCards: RecentDecision[] = completed
         .filter((decision) => decision.draft)
@@ -45,12 +38,9 @@ const getRecentDecisions = (inProgress: InProgressDecision[], completed: Decisio
             description: decision.description,
             date: formatDate(decision.date),
             status: 'completed',
-            modifiedTimestamp: getModifiedTimestamp(decision.updatedAt, decision.date),
         }));
 
-    return [...activeCards, ...completedCards]
-        .sort((first, second) => second.modifiedTimestamp - first.modifiedTimestamp)
-        .slice(0, 4);
+    return [...activeCards, ...completedCards].slice(0, 4);
 };
 
 const RecentDecisions = () => {
@@ -87,12 +77,12 @@ const RecentDecisions = () => {
                     </p>
                 </div>
 
-                <a
-                    href="/dashboard"
+                <button
+                    type="button"
                     className="recent-decisions-more"
                 >
                     전체 보기 →
-                </a>
+                </button>
             </div>
 
             <div className="recent-decisions-list">

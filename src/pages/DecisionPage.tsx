@@ -9,7 +9,7 @@ import WeightSlider from '../components/decision/WeightSlider';
 import { decisionTemplates } from '../data/decisionTemplates';
 import { useDecisionStore } from '../store/decisionStore';
 import type { DecisionDraft } from '../types/decision';
-import { createEmptyScores, distributeWeight, normalizeWeights } from '../utils/calculateScore';
+import { createDefaultScores, distributeWeight, normalizeWeights } from '../utils/calculateScore';
 import './DecisionLayout.css';
 import './DecisionPage.css';
 
@@ -75,7 +75,7 @@ const DecisionPage = () => {
       description: template?.description ?? '',
       alternatives: emptyDecision.alternatives,
       criteria: template?.criteria ?? emptyDecision.criteria,
-      scores: createEmptyScores(template?.criteria ?? emptyDecision.criteria),
+      scores: createDefaultScores(template?.criteria ?? emptyDecision.criteria, emptyDecision.alternatives),
     };
     startDecision(initialDraft, 1, Boolean(template));
   }, [resumeDecision, startDecision]);
@@ -89,7 +89,7 @@ const DecisionPage = () => {
     const id = createId('alternative');
     updateDecision({
       alternatives: [...alternatives, { id, name: '', description: '' }],
-      scores,
+      scores: Object.fromEntries(Object.entries(scores).map(([criterionId, row]) => [criterionId, { ...row, [id]: 3 }])),
     });
   };
 
@@ -113,7 +113,7 @@ const DecisionPage = () => {
     const id = createId('criterion');
     updateDecision({
       criteria: [...criteria, { id, name: '', description: '', weight: 0 }],
-      scores: { ...scores, [id]: {} },
+      scores: { ...scores, [id]: Object.fromEntries(alternatives.map((alternative) => [alternative.id, 3])) },
     });
   };
 
