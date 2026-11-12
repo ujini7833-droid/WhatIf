@@ -28,11 +28,24 @@ const getModifiedTimestamp = (updatedAt?: string, fallbackDate?: string) => {
     return Number.isNaN(fallbackTimestamp) ? 0 : fallbackTimestamp;
 };
 
+const hasUserInput = (decision: InProgressDecision) => (
+    Boolean(decision.title.trim() || decision.description.trim())
+    || decision.alternatives.some((alternative) => (
+        alternative.name.trim() || alternative.description.trim()
+    ))
+    || decision.criteria.some((criterion) => (
+        criterion.name.trim() || criterion.description.trim()
+    ))
+    || Object.values(decision.scores).some((criterionScores) => (
+        Object.values(criterionScores).some((score) => Number.isFinite(score))
+    ))
+);
+
 const getRecentDecisions = (inProgress: InProgressDecision[], completed: DecisionRecord[]): RecentDecision[] => {
     const completedIds = new Set(completed.map((decision) => decision.id));
     const progressById = new Map(inProgress.map((decision) => [decision.id, decision]));
     const activeCards: RecentDecision[] = inProgress
-        .filter((decision) => !completedIds.has(decision.id))
+        .filter((decision) => !completedIds.has(decision.id) && hasUserInput(decision))
         .map((decision) => ({
             id: decision.id,
             title: decision.title.trim() || '제목 없는 결정',
