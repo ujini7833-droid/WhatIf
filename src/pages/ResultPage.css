@@ -303,15 +303,15 @@
   min-height: 110px;
 }
 
-.decision-save-button {
+.outcome-card .decision-complete-form .decision-save-button {
   display: block;
-  min-height: 38px;
-  margin: 0;
-  padding: 0 19px;
-  color: #f5f3ff;
-  font-size: 12px;
+  width: fit-content;
+  min-height: 44px;
+  margin: 24px 0 0 auto;
+  padding: 0 18px;
+  color: #fff;
   font-family: 'Pretendard-Medium', sans-serif;
-  font-weight: 600;
+  font-size: 14px;
   background: linear-gradient(135deg, #9b5cff, #5865ff);
   border: 0;
   border-radius: 10px;

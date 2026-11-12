@@ -207,7 +207,7 @@ const ResultPage = () => {
                   rows={3} 
                 />
                 {showError && <p className="decision-validation-message">최종 선택지를 하나 골라주세요.</p>}
-                <button className="decision-save-button" type="button" onClick={saveDecision}>이 결정 완료하기</button>
+                <button className="decision-save-button" type="button" onClick={saveDecision}>결정 완료하기</button>
               </div>
             )
           )}
