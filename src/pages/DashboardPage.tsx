@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { Clock3, ListTodo, Target } from 'lucide-react';
+import { CheckCircle2, Clock3, ListTodo, Target } from 'lucide-react';
 import Header from '../components/common/Header/Header';
 import DecisionCard from '../components/home/RecentDecisions/DecisionCard';
 import { useDecisionStore } from '../store/decisionStore';
@@ -18,6 +18,16 @@ interface DashboardDecision {
   status: 'completed' | 'in-progress';
   sortDate: number;
 }
+
+const getSortDate = (updatedAt?: string, date?: string) => {
+  const timestamp = Date.parse(updatedAt || '');
+
+  if (!Number.isNaN(timestamp)) return timestamp;
+
+  const fallbackTimestamp = Date.parse(date?.replaceAll('.', '-') ?? '');
+
+  return Number.isNaN(fallbackTimestamp) ? 0 : fallbackTimestamp;
+};
 
 const DashboardPage = () => {
   const inProgress = useDecisionStore((state) => state.inProgressDecisions);
@@ -39,16 +49,16 @@ const DashboardPage = () => {
         description: item.description.trim() || '작성 중',
         date: formatKoreanDate(item.updatedAt),
         status: 'in-progress',
-        sortDate: Date.parse(item.updatedAt) || 0,
+        sortDate: getSortDate(item.updatedAt),
       }));
 
     const completedItems: DashboardDecision[] = completed.map((item: DecisionRecord) => ({
       id: item.id,
       title: item.title.trim() || '제목 없음',
-      description: item.description.trim() || '작성 중',
+      description: item.description?.trim() || '완료한 결정',
       date: formatKoreanDate(item.updatedAt ?? item.date),
       status: 'completed',
-      sortDate: Date.parse(item.updatedAt ?? item.date.replaceAll('.', '-')) || 0,
+      sortDate: getSortDate(item.updatedAt, item.date),
     }));
 
     return [...progressItems, ...completedItems];
@@ -97,7 +107,7 @@ const DashboardPage = () => {
         <section className="dashboard-page-header">
           <div>
             <p className="dashboard-eyebrow">YOUR WORKSPACE</p>
-            <p className="dashboard-title">DashBoard</p>
+            <p className="dashboard-title">Dashboard</p>
             <p className="dashboard-description">
               지금까지의 고민과 선택을 확인해보세요.
             </p>
@@ -119,6 +129,16 @@ const DashboardPage = () => {
             </div>
             <p className="dashboard-stat-label">진행 중</p>
             <strong className="dashboard-stat-value">{inProgressCount}</strong>
+          </article>
+
+          <article className="dashboard-stat-card">
+            <div className="dashboard-stat-card-icon cyan">
+              <CheckCircle2 size={20} />
+            </div>
+            <p className="dashboard-stat-label">완료된 결정</p>
+            <strong className="dashboard-stat-value">
+              {completedCount}
+            </strong>
           </article>
 
           <article className="dashboard-stat-card">
