@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Header from '../components/common/Header/Header';
 import AlternativeStep from '../components/decision/AlternativeStep';
 import CriteriaEditor from '../components/decision/CriteriaEditor';
@@ -29,6 +29,7 @@ const DecisionPage = () => {
   const updateDecision = useDecisionStore((state) => state.updateDecision);
   const setStoreStep = useDecisionStore((state) => state.setCurrentStep);
   const removeProgress = useDecisionStore((state) => state.removeProgress);
+  const [showValidation, setShowValidation] = useState(false);
   const initialized = useRef(false);
   const emptyDecision: DecisionDraft = {
     id: '',
@@ -98,7 +99,13 @@ const DecisionPage = () => {
   }, [resumeDecision, startDecision]);
 
   const updateAlternative = (id: string, field: 'name' | 'description', value: string) => {
+    const previousValue = alternatives.find((item) => item.id === id)?.[field] ?? '';
     updateDecision({ alternatives: alternatives.map((item) => item.id === id ? { ...item, [field]: value } : item) });
+
+    if (field === 'name') {
+      if (value.trim()) setShowValidation(false);
+      else if (previousValue.trim()) setShowValidation(true);
+    }
   };
 
   const addAlternative = () => {
@@ -121,7 +128,13 @@ const DecisionPage = () => {
   };
 
   const updateCriterion = (id: string, field: 'name' | 'description', value: string) => {
+    const previousValue = criteria.find((item) => item.id === id)?.[field] ?? '';
     updateDecision({ criteria: criteria.map((item) => item.id === id ? { ...item, [field]: value } : item) });
+
+    if (field === 'name') {
+      if (value.trim()) setShowValidation(false);
+      else if (previousValue.trim()) setShowValidation(true);
+    }
   };
 
   const addCriterion = () => {
@@ -144,18 +157,23 @@ const DecisionPage = () => {
 
   const goToNextStep = () => {
     if (currentStep === 1 && !title.trim()) {
+      setShowValidation(true);
       return;
     }
     if (currentStep === 2 && (alternatives.length < 2 || alternatives.some((item) => !item.name.trim()))) {
+      setShowValidation(true);
       return;
     }
     if (currentStep === 3 && (criteria.length < 2 || criteria.some((item) => !item.name.trim()))) {
+      setShowValidation(true);
       return;
     }
     if (currentStep === 4 && weightTotal !== 100) {
+      setShowValidation(true);
       return;
     }
 
+    setShowValidation(false);
     if (currentStep < 5) {
       setStoreStep(currentStep + 1);
       return;
@@ -174,8 +192,12 @@ const DecisionPage = () => {
         <DecisionInfoStep
           title={title}
           description={description}
-          showTitleError={false}
-          onTitleChange={(value) => updateDecision({ title: value })}
+          showTitleError={showValidation && !title.trim()}
+          onTitleChange={(value) => {
+            updateDecision({ title: value });
+            if (value.trim()) setShowValidation(false);
+            else if (title.trim()) setShowValidation(true);
+          }}
           onDescriptionChange={(value) => updateDecision({ description: value })}
         />
       );
@@ -206,8 +228,15 @@ const DecisionPage = () => {
           <WeightSlider
             criteria={criteria}
             allowManualInput
-            onChange={(id, value) => updateDecision({ criteria: criteria.map((criterion) => criterion.id === id ? { ...criterion, weight: value } : criterion) })}
-            onRangeChange={(id, value) => updateDecision({ criteria: distributeWeight(criteria, id, value) })}
+            onChange={(id, value) => {
+              const nextCriteria = criteria.map((criterion) => criterion.id === id ? { ...criterion, weight: value } : criterion);
+              updateDecision({ criteria: nextCriteria });
+              setShowValidation(nextCriteria.reduce((sum, criterion) => sum + criterion.weight, 0) !== 100);
+            }}
+            onRangeChange={(id, value) => {
+              updateDecision({ criteria: distributeWeight(criteria, id, value) });
+              setShowValidation(false);
+            }}
           />
         </section>
       );
@@ -230,7 +259,7 @@ const DecisionPage = () => {
         <DecisionProgress currentStep={currentStep} />
         <section className="decision-form-card">
           {renderStep()}
-          {validationMessage && (
+          {validationMessage && showValidation && currentStep !== 1 && (
             <p className="decision-validation-message" role="status">
               {validationMessage}
             </p>
@@ -239,14 +268,16 @@ const DecisionPage = () => {
             <button className="decision-back-button" type="button" onClick={() => setStoreStep(Math.max(1, currentStep - 1))} disabled={currentStep === 1}>
               이전
             </button>
-            <button
+            <div className="decision-next-button-wrap" onPointerDown={() => { if (!canAdvance) setShowValidation(true); }}>
+              <button
               className="decision-next-button"
               type="button"
               onClick={goToNextStep}
               disabled={!canAdvance}
             >
               {currentStep === 5 ? '결과 확인' : '다음 단계'} <span aria-hidden="true">→</span>
-            </button>
+              </button>
+            </div>
           </div>
         </section>
       </main>
