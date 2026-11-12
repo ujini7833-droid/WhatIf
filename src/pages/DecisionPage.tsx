@@ -266,12 +266,14 @@ const DecisionPage = () => {
       <main className="decision-page">
         <DecisionProgress currentStep={currentStep} />
         <section className="decision-form-card">
+          {/*
           <div className="decision-draft-save">
             {showSavedMessage && <p className="decision-saved-message" role="status">임시저장이 완료되었어요</p>}
             <button className="decision-save-button" type="button" onClick={handleSaveProgress}>
               임시저장
             </button>
           </div>
+          */}
           {renderStep()}
           {validationMessage && showValidation && currentStep !== 1 && (
             <p className="decision-validation-message" role="status">
