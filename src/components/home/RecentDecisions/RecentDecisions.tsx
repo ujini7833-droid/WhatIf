@@ -21,12 +21,16 @@ const formatDate = (date?: string) => (
 );
 
 const getModifiedTimestamp = (updatedAt?: string, fallbackDate?: string) => {
-    const timestamp = Date.parse(updatedAt ?? fallbackDate?.replaceAll('.', '-') ?? '');
-    return Number.isNaN(timestamp) ? 0 : timestamp;
+    const timestamp = Date.parse(updatedAt || '');
+    if (!Number.isNaN(timestamp)) return timestamp;
+
+    const fallbackTimestamp = Date.parse(fallbackDate?.replaceAll('.', '-') ?? '');
+    return Number.isNaN(fallbackTimestamp) ? 0 : fallbackTimestamp;
 };
 
 const getRecentDecisions = (inProgress: InProgressDecision[], completed: DecisionRecord[]): RecentDecision[] => {
     const completedIds = new Set(completed.map((decision) => decision.id));
+    const progressById = new Map(inProgress.map((decision) => [decision.id, decision]));
     const activeCards: RecentDecision[] = inProgress
         .filter((decision) => !completedIds.has(decision.id))
         .map((decision) => ({
@@ -39,14 +43,21 @@ const getRecentDecisions = (inProgress: InProgressDecision[], completed: Decisio
         }));
     const completedCards: RecentDecision[] = completed
         .filter((decision) => decision.draft)
-        .map((decision) => ({
-            id: decision.id,
-            title: decision.title,
-            description: decision.description,
-            date: formatDate(decision.date),
-            status: 'completed',
-            modifiedTimestamp: getModifiedTimestamp(decision.updatedAt, decision.date),
-        }));
+        .map((decision) => {
+            const progress = progressById.get(decision.id);
+            const completedTimestamp = getModifiedTimestamp(decision.updatedAt, decision.date);
+            const progressTimestamp = getModifiedTimestamp(progress?.updatedAt, decision.date);
+            const latestDraft = progressTimestamp > completedTimestamp ? progress : null;
+
+            return {
+                id: decision.id,
+                title: latestDraft?.title.trim() || decision.title,
+                description: latestDraft?.description.trim() || decision.description,
+                date: formatDate(decision.date),
+                status: 'completed',
+                modifiedTimestamp: Math.max(completedTimestamp, progressTimestamp),
+            };
+        });
 
     return [...activeCards, ...completedCards]
         .sort((first, second) => second.modifiedTimestamp - first.modifiedTimestamp)

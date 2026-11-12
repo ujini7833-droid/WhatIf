@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import Header from '../components/common/Header/Header';
 import AlternativeStep from '../components/decision/AlternativeStep';
 import CriteriaEditor from '../components/decision/CriteriaEditor';
@@ -29,7 +29,6 @@ const DecisionPage = () => {
   const updateDecision = useDecisionStore((state) => state.updateDecision);
   const setStoreStep = useDecisionStore((state) => state.setCurrentStep);
   const removeProgress = useDecisionStore((state) => state.removeProgress);
-  const [showValidation, setShowValidation] = useState(false);
   const initialized = useRef(false);
   const emptyDecision: DecisionDraft = {
     id: '',
@@ -48,6 +47,24 @@ const DecisionPage = () => {
   const decision = currentDecision ?? emptyDecision;
   const { id: decisionId, title, description, alternatives, criteria, scores } = decision;
   const weightTotal = criteria.reduce((sum, criterion) => sum + criterion.weight, 0);
+  const validationMessage = currentStep === 1
+    ? !title.trim() ? '결정 상황을 입력하면 다음 단계로 넘어갈 수 있어요.' : ''
+    : currentStep === 2
+      ? alternatives.length < 2
+        ? '선택지를 두 개 이상 추가해주세요.'
+        : alternatives.some((item) => !item.name.trim())
+          ? '선택지 이름을 모두 입력해주세요.'
+          : ''
+      : currentStep === 3
+        ? criteria.length < 2
+          ? '평가 기준을 두 개 이상 추가해주세요.'
+          : criteria.some((item) => !item.name.trim())
+            ? '평가 기준 이름을 모두 입력해주세요.'
+            : ''
+        : currentStep === 4 && weightTotal !== 100
+          ? '가중치 합계를 100%로 맞춰주세요.'
+          : '';
+  const canAdvance = validationMessage === '';
 
   useEffect(() => {
     if (initialized.current) return;
@@ -82,7 +99,6 @@ const DecisionPage = () => {
 
   const updateAlternative = (id: string, field: 'name' | 'description', value: string) => {
     updateDecision({ alternatives: alternatives.map((item) => item.id === id ? { ...item, [field]: value } : item) });
-    setShowValidation(false);
   };
 
   const addAlternative = () => {
@@ -106,7 +122,6 @@ const DecisionPage = () => {
 
   const updateCriterion = (id: string, field: 'name' | 'description', value: string) => {
     updateDecision({ criteria: criteria.map((item) => item.id === id ? { ...item, [field]: value } : item) });
-    setShowValidation(false);
   };
 
   const addCriterion = () => {
@@ -129,23 +144,18 @@ const DecisionPage = () => {
 
   const goToNextStep = () => {
     if (currentStep === 1 && !title.trim()) {
-      setShowValidation(true);
       return;
     }
     if (currentStep === 2 && (alternatives.length < 2 || alternatives.some((item) => !item.name.trim()))) {
-      setShowValidation(true);
       return;
     }
     if (currentStep === 3 && (criteria.length < 2 || criteria.some((item) => !item.name.trim()))) {
-      setShowValidation(true);
       return;
     }
     if (currentStep === 4 && weightTotal !== 100) {
-      setShowValidation(true);
       return;
     }
 
-    setShowValidation(false);
     if (currentStep < 5) {
       setStoreStep(currentStep + 1);
       return;
@@ -164,8 +174,8 @@ const DecisionPage = () => {
         <DecisionInfoStep
           title={title}
           description={description}
-          showTitleError={showValidation && !title.trim()}
-          onTitleChange={(value) => { updateDecision({ title: value }); setShowValidation(false); }}
+          showTitleError={false}
+          onTitleChange={(value) => updateDecision({ title: value })}
           onDescriptionChange={(value) => updateDecision({ description: value })}
         />
       );
@@ -175,7 +185,6 @@ const DecisionPage = () => {
       return (
         <>
           <AlternativeStep alternatives={alternatives} onChange={updateAlternative} onAdd={addAlternative} onRemove={removeAlternative} />
-          {showValidation && <p className="decision-validation-message">선택지 이름을 모두 입력해주세요. 선택지는 두 개 이상 필요해요.</p>}
         </>
       );
     }
@@ -184,7 +193,6 @@ const DecisionPage = () => {
       return (
         <>
           <CriteriaEditor criteria={criteria} onChange={updateCriterion} onAdd={addCriterion} onRemove={removeCriterion} />
-          {showValidation && <p className="decision-validation-message">평가 기준 이름을 모두 입력해주세요. 기준은 두 개 이상 필요해요.</p>}
         </>
       );
     }
@@ -222,15 +230,20 @@ const DecisionPage = () => {
         <DecisionProgress currentStep={currentStep} />
         <section className="decision-form-card">
           {renderStep()}
+          {validationMessage && (
+            <p className="decision-validation-message" role="status">
+              {validationMessage}
+            </p>
+          )}
           <div className="decision-form-actions">
-            <button className="decision-back-button" type="button" onClick={() => { setShowValidation(false); setStoreStep(Math.max(1, currentStep - 1)); }} disabled={currentStep === 1}>
+            <button className="decision-back-button" type="button" onClick={() => setStoreStep(Math.max(1, currentStep - 1))} disabled={currentStep === 1}>
               이전
             </button>
             <button
               className="decision-next-button"
               type="button"
               onClick={goToNextStep}
-              disabled={currentStep === 4 && weightTotal !== 100}
+              disabled={!canAdvance}
             >
               {currentStep === 5 ? '결과 확인' : '다음 단계'} <span aria-hidden="true">→</span>
             </button>

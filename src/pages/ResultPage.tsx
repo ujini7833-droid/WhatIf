@@ -1,15 +1,19 @@
 import { useState } from 'react';
 import { ChevronLeft } from 'lucide-react';
 import Header from '../components/common/Header/Header';
-import type { Criterion, DecisionRecord } from '../types/decision';
+import type { Criterion, DecisionDraft, DecisionRecord } from '../types/decision';
 import { useDecisionStore } from '../store/decisionStore';
-import { calculateResults, distributeWeight } from '../utils/calculateScore';
+import { calculateResults, distributeWeight, getCompetitionRank } from '../utils/calculateScore';
 import ScoreChart from '../components/decision/ScoreChart';
 import WeightSlider from '../components/decision/WeightSlider';
 import '../components/decision/DecisionInfoStep.css';
 import checkIcon from '../assets/check.svg';
 import './DecisionLayout.css';
 import './ResultPage.css';
+
+const draftsMatch = (first: DecisionDraft, second: DecisionDraft) => (
+  JSON.stringify(first) === JSON.stringify(second)
+);
 
 const ResultPage = () => {
   const currentDecision = useDecisionStore((state) => state.currentDecision);
@@ -27,7 +31,10 @@ const ResultPage = () => {
   const [reason, setReason] = useState('');
   const [showError, setShowError] = useState(false);
   const [savedRecord, setSavedRecord] = useState<DecisionRecord | null>(null);
-  const visibleSavedRecord = savedRecord ?? (draft ? completedDecisions.find((record) => record.id === draft.id) ?? null : null);
+  const matchingSavedRecord = draft
+    ? completedDecisions.find((record) => record.id === draft.id && draftsMatch(record.draft, draft)) ?? null
+    : null;
+  const visibleSavedRecord = savedRecord ?? matchingSavedRecord;
   const view = window.location.pathname === '/what-if'
     ? 'what-if'
     : window.location.pathname === '/complete'
@@ -121,13 +128,16 @@ const ResultPage = () => {
             <>
               <div className="decision-results-layout">
                 <div className="decision-ranking-list">
-                  {baseResults.map((result, index) => (
-                    <article className={`decision-ranking-card ${index === 0 ? 'winner' : ''}`} key={result.id}>
-                      <span className="decision-ranking-place">{index + 1}<small>위</small></span>
-                      <span className="decision-ranking-name">{result.name}</span>
-                      <strong>{result.score.toFixed(2)}<small> / 5</small></strong>
-                    </article>
-                  ))}
+                  {baseResults.map((result, index) => {
+                    const rank = getCompetitionRank(baseResults, index);
+                    return (
+                      <article className={`decision-ranking-card ${rank === 1 ? 'winner' : ''}`} key={result.id}>
+                        <span className="decision-ranking-place">{rank}<small>위</small></span>
+                        <span className="decision-ranking-name">{result.name}</span>
+                        <strong>{result.score.toFixed(2)}<small> / 5</small></strong>
+                      </article>
+                    );
+                  })}
                 </div>
                 <ScoreChart alternatives={draft.alternatives} results={baseResults} />
               </div>
@@ -152,8 +162,10 @@ const ResultPage = () => {
                 <div className="decision-simulation-summary">
                   <div className="decision-rank-changes">
                     {simulationResults.map((result, index) => {
-                      const oldRank = baseResults.findIndex((item) => item.id === result.id) + 1;
-                      const change = oldRank - index - 1;
+                      const oldIndex = baseResults.findIndex((item) => item.id === result.id);
+                      const oldRank = getCompetitionRank(baseResults, oldIndex);
+                      const currentRank = getCompetitionRank(simulationResults, index);
+                      const change = oldRank - currentRank;
                       return <p key={result.id}><span>{result.name}</span><strong>{change === 0 ? '순위 유지' : `${Math.abs(change)}순위 ${change > 0 ? '상승' : '하락'}`}</strong></p>;
                     })}
                   </div>
@@ -181,7 +193,7 @@ const ResultPage = () => {
                   {baseResults.map((result, index) => (
                     <label className={`decision-final-option ${selectedAlternative === result.id ? 'selected' : ''}`} key={result.id}>
                       <input type="radio" name="final-choice" value={result.id} checked={selectedAlternative === result.id} onChange={() => { setSelectedAlternative(result.id); setShowError(false); }} />
-                      <span className="decision-final-rank">{index + 1}위</span>
+                      <span className="decision-final-rank">{getCompetitionRank(baseResults, index)}위</span>
                       <span className="decision-final-name">{result.name}</span>
                       <strong>{result.score.toFixed(2)}점</strong>
                     </label>

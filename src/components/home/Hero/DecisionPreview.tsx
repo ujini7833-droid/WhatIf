@@ -1,5 +1,5 @@
 import { useDecisionStore } from '../../../store/decisionStore';
-import { calculateResults } from '../../../utils/calculateScore';
+import { calculateResults, getCompetitionRank } from '../../../utils/calculateScore';
 import { getLatestDecision, hasDecisionChartData } from '../../../utils/getLatestDecision';
 import RadarChart from './RadarChart';
 import RankingItem from './RankingItem';
@@ -44,7 +44,7 @@ const DecisionPreview = () => {
                     {rankings.slice(0, 3).map((item, index) => (
                         <RankingItem
                             key={item.id}
-                            rank={index + 1}
+                            rank={getCompetitionRank(rankings, index)}
                             name={item.name}
                             score={item.score}
                         />
