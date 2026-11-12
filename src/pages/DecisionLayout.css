@@ -6,7 +6,7 @@
 
 .decision-form-card {
   position: relative;
-  margin-top: 56px;
+  margin-top: 16px;
   padding: 40px;
   color: #f5f3ff;
   background: #101326;
@@ -43,16 +43,26 @@
 }
 
 .decision-draft-save {
-  position: absolute;
-  top: 40px;
-  right: 40px;
   display: flex;
+  flex-wrap: nowrap;
+  justify-content: flex-end;
   align-items: center;
   gap: 12px;
+  min-height: 38px;
+  margin-top: 24px;
 }
 
-.decision-form-card .decision-save-button {
-  display: block;
+.decision-page > .decision-draft-save {
+  position: relative;
+  z-index: 1;
+}
+
+.decision-page > .decision-draft-save .decision-save-button {
+  display: inline-flex;
+  align-items: center;
+  flex: 0 0 auto;
+  width: auto;
+  min-width: max-content;
   min-height: 38px;
   margin: 0;
   padding: 0 19px;
@@ -66,9 +76,11 @@
 }
 
 .decision-saved-message {
+  flex: 0 0 auto;
   margin: 0;
   color: #a8e6c1;
   font-size: 12px;
+  white-space: nowrap;
 }
 
 .decision-next-button {
@@ -92,24 +104,12 @@
   }
 
   .decision-form-card {
-    margin-top: 36px;
+    margin-top: 16px;
     padding: 24px 20px;
   }
 
   .decision-draft-save {
-    position: absolute;
-    top: 24px;
-    right: 20px;
-    flex-direction: column;
-    align-items: flex-end;
-    gap: 0;
-  }
-
-  .decision-saved-message {
-    position: absolute;
-    right: 0;
-    bottom: calc(100% + 6px);
-    white-space: nowrap;
+    margin-top: 20px;
   }
 
   .decision-form-actions,
