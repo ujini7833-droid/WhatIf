@@ -45,7 +45,7 @@ const getRecentDecisions = (inProgress: InProgressDecision[], completed: Decisio
     const completedIds = new Set(completed.map((decision) => decision.id));
     const progressById = new Map(inProgress.map((decision) => [decision.id, decision]));
     const activeCards: RecentDecision[] = inProgress
-        .filter((decision) => !completedIds.has(decision.id) && hasUserInput(decision))
+        .filter((decision) => !completedIds.has(decision.id) && (decision.isManuallySaved || hasUserInput(decision)))
         .map((decision) => ({
             id: decision.id,
             title: decision.title.trim() || '제목 없는 결정',

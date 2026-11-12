@@ -40,10 +40,12 @@ const readLegacyData = () => {
 };
 
 const upsertProgress = (items: InProgressDecision[], decision: DecisionDraft, currentStep: number) => {
+  const previous = items.find((item) => item.id === decision.id);
   const progress: InProgressDecision = {
     ...decision,
     currentStep,
     updatedAt: new Date().toISOString(),
+    isManuallySaved: previous?.isManuallySaved,
   };
   return [progress, ...items.filter((item) => item.id !== decision.id)];
 };
@@ -118,9 +120,15 @@ export const useDecisionStore = create<DecisionStore>()(persist((set, get) => ({
       : state.inProgressDecisions,
   })),
 
-  saveProgress: () => set((state) => state.currentDecision
-    ? { inProgressDecisions: upsertProgress(state.inProgressDecisions, state.currentDecision, state.currentStep) }
-    : state),
+  saveProgress: () => set((state) => {
+    if (!state.currentDecision) return state;
+    const progress = upsertProgress(state.inProgressDecisions, state.currentDecision, state.currentStep);
+    return {
+      inProgressDecisions: progress.map((item) => item.id === state.currentDecision?.id
+        ? { ...item, isManuallySaved: true }
+        : item),
+    };
+  }),
 
   removeProgress: (id) => {
     set((state) => ({

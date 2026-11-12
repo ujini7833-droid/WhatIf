@@ -25,6 +25,7 @@ export interface DecisionDraft {
 export interface InProgressDecision extends DecisionDraft {
   currentStep: number;
   updatedAt: string;
+  isManuallySaved?: boolean;
 }
 
 export interface DecisionRecord {

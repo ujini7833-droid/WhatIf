@@ -29,7 +29,9 @@ const DecisionPage = () => {
   const updateDecision = useDecisionStore((state) => state.updateDecision);
   const setStoreStep = useDecisionStore((state) => state.setCurrentStep);
   const removeProgress = useDecisionStore((state) => state.removeProgress);
+  const saveProgress = useDecisionStore((state) => state.saveProgress);
   const [showValidation, setShowValidation] = useState(false);
+  const [showSavedMessage, setShowSavedMessage] = useState(false);
   const initialized = useRef(false);
   const emptyDecision: DecisionDraft = {
     id: '',
@@ -66,6 +68,12 @@ const DecisionPage = () => {
           ? '가중치 합계를 100%로 맞춰주세요.'
           : '';
   const canAdvance = validationMessage === '';
+
+  const handleSaveProgress = () => {
+    saveProgress();
+    setShowSavedMessage(true);
+    window.setTimeout(() => setShowSavedMessage(false), 3000);
+  };
 
   useEffect(() => {
     if (initialized.current) return;
@@ -258,6 +266,12 @@ const DecisionPage = () => {
       <main className="decision-page">
         <DecisionProgress currentStep={currentStep} />
         <section className="decision-form-card">
+          <div className="decision-draft-save">
+            {showSavedMessage && <p className="decision-saved-message" role="status">임시저장이 완료되었어요</p>}
+            <button className="decision-save-button" type="button" onClick={handleSaveProgress}>
+              임시저장
+            </button>
+          </div>
           {renderStep()}
           {validationMessage && showValidation && currentStep !== 1 && (
             <p className="decision-validation-message" role="status">
@@ -268,15 +282,17 @@ const DecisionPage = () => {
             <button className="decision-back-button" type="button" onClick={() => setStoreStep(Math.max(1, currentStep - 1))} disabled={currentStep === 1}>
               이전
             </button>
-            <div className="decision-next-button-wrap" onPointerDown={() => { if (!canAdvance) setShowValidation(true); }}>
-              <button
-              className="decision-next-button"
-              type="button"
-              onClick={goToNextStep}
-              disabled={!canAdvance}
-            >
-              {currentStep === 5 ? '결과 확인' : '다음 단계'} <span aria-hidden="true">→</span>
-              </button>
+            <div className="decision-form-action-group">
+              <div className="decision-next-button-wrap" onPointerDown={() => { if (!canAdvance) setShowValidation(true); }}>
+                <button
+                  className="decision-next-button"
+                  type="button"
+                  onClick={goToNextStep}
+                  disabled={!canAdvance}
+                >
+                  {currentStep === 5 ? '결과 확인' : '다음 단계'} <span aria-hidden="true">→</span>
+                </button>
+              </div>
             </div>
           </div>
         </section>

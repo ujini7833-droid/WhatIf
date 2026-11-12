@@ -5,6 +5,7 @@
 }
 
 .decision-form-card {
+  position: relative;
   margin-top: 56px;
   padding: 40px;
   color: #f5f3ff;
@@ -20,6 +21,12 @@
   margin-top: 48px;
 }
 
+.decision-form-action-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
 .decision-form-actions button {
   min-height: 42px;
   padding: 0 19px;
@@ -33,6 +40,35 @@
 
 .decision-back-button {
   background: #252940;
+}
+
+.decision-draft-save {
+  position: absolute;
+  top: 40px;
+  right: 40px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.decision-form-card .decision-save-button {
+  display: block;
+  min-height: 38px;
+  margin: 0;
+  padding: 0 19px;
+  color: #f5f3ff;
+  font-size: 12px;
+  font-family: 'Pretendard-Medium', sans-serif;
+  background: #252940;
+  border: 0;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.decision-saved-message {
+  margin: 0;
+  color: #a8e6c1;
+  font-size: 11px;
 }
 
 .decision-next-button {
@@ -59,4 +95,20 @@
     margin-top: 36px;
     padding: 24px 20px;
   }
+
+  .decision-draft-save {
+    top: 24px;
+    right: 20px;
+  }
+
+  .decision-form-actions,
+  .decision-form-action-group {
+    gap: 8px;
+  }
+
+  .decision-form-action-group {
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+
 }
