@@ -1,32 +1,62 @@
-# React + TypeScript + Vite
+WhatIf: 더 나은 선택을 위한 의사결정 도구
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+WhatIf는 여러 선택지를 객관적인 기준으로 비교하고, 나에게 더 적합한 선택을 찾을 수 있도록 돕는 개인 프로젝트입니다.
 
-Currently, two official plugins are available:
+선택지와 평가 기준을 직접 설정하고, 각 기준의 중요도에 따라 가중치를 부여하여 결과를 확인할 수 있습니다. 또한 What-if 시뮬레이션을 통해 평가 기준의 중요도를 변경했을 때 결과가 어떻게 달라지는지 탐색할 수 있습니다.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+🔗 배포 링크: WhatIf 바로가기
 
-## React Compiler
+✨ Key Features
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+1. Decision Creation
+- 나만의 의사결정 과정을 단계별로 구성할 수 있습니다.
 
-## Expanding the Oxlint configuration
+2. Weighted Scoring
+- 평가 기준의 중요도를 반영하여 선택지별 점수를 계산합니다.
 
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
+3. What-if Simulation
+- 평가 기준의 중요도를 변경하면서 결과의 변화를 확인할 수 있습니다.
 
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
-```
+4. Dashboard
+- 지금까지 기록한 의사결정을 한눈에 관리할 수 있습니다.
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+5. Data Persistence
+- 브라우저를 새로고침해도 작성한 결정 기록을 유지할 수 있습니다.
+- Zustand를 활용한 전역 상태 관리, LocalStorage 기반 데이터 유지
+
+🛠 Tech Stack
+Category
+
+Technology
+
+Language
+
+TypeScript
+
+Library
+
+React
+
+Build Tool
+
+Vite
+
+State Management
+
+Zustand
+
+Data Persistence
+
+LocalStorage
+
+Styling
+
+CSS
+
+Chart
+
+Recharts
+
+Icon
+
+Lucide React
