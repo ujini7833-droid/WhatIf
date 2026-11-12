@@ -97,8 +97,12 @@
   }
 
   .decision-draft-save {
+    position: absolute;
     top: 24px;
     right: 20px;
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
   }
 
   .decision-form-actions,
