@@ -24,10 +24,16 @@
     cursor: pointer;
 }
 
-.template-card:hover {
+.template-card:hover,
+.template-card:focus-visible {
     transform: translateY(-6px);
     border-color: rgba(155, 92, 255, 0.5);
     box-shadow: 0 12px 35px rgba(155, 92, 255, 0.12);
+}
+
+.template-card:focus-visible {
+    outline: 2px solid #9b5cff;
+    outline-offset: 3px;
 }
 
 /* 상단 영역 */
@@ -53,15 +59,24 @@
 }
 
 .template-card-arrow {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    flex-shrink: 0;
     color: #8589a3;
-    font-size: 20px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
 
     transition:
         color 0.25s ease,
         transform 0.25s ease;
 }
 
-.template-card:hover .template-card-arrow {
+.template-card:hover .template-card-arrow,
+.template-card:focus-visible .template-card-arrow {
     color: #20e0d0;
     transform: translate(3px, -3px);
 }

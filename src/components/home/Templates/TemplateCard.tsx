@@ -1,3 +1,4 @@
+import { ArrowUpRight } from 'lucide-react';
 import './TemplateCard.css';
 
 interface TemplateCardProps {
@@ -23,8 +24,8 @@ const TemplateCard = ({
                     {icon}
                 </span>
 
-                <span className="template-card-arrow">
-                    ↗
+                <span className="template-card-arrow" aria-hidden="true">
+                    <ArrowUpRight size={18} strokeWidth={2.5} />
                 </span>
             </div>
 
