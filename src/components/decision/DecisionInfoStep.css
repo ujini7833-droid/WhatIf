@@ -19,8 +19,8 @@
   letter-spacing: 0.07em;
   text-transform: uppercase;
   background: rgba(32, 224, 208, 0.08);
-  border: 1px solid rgba(32, 224, 208, 0.2);
-  border-radius: 999px;
+  /* border: 1px solid rgba(32, 224, 208, 0.2); */
+  border-radius: 18px;
   margin: 0 0 12px;
 }
 
