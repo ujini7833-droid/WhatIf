@@ -19,7 +19,7 @@ const DecisionInfoStep = ({
         <section className="decision-info-step">
             <div className="decision-info-step-header">
                 <span className="decision-info-eyebrow">
-                    STEP 01 - DECISION INFO
+                    STEP 01 · DECISION INFO
                 </span>
 
                 <p className="decision-info-description">

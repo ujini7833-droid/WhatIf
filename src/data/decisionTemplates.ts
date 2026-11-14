@@ -1,8 +1,10 @@
+import type { LucideIcon } from 'lucide-react';
+import { BriefcaseBusiness, House, Laptop, Plane } from 'lucide-react';
 import type { Criterion } from '../types/decision';
 
 export interface DecisionTemplate {
   id: string;
-  icon: string;
+  icon: LucideIcon;
   title: string;
   description: string;
   criteria: Criterion[];
@@ -11,7 +13,7 @@ export interface DecisionTemplate {
 export const decisionTemplates: DecisionTemplate[] = [
   {
     id: 'travel',
-    icon: '✈️',
+    icon: Plane,
     title: '여행지 선택',
     description: '여행 스타일과 예산에 맞는 여행지 비교',
     criteria: [
@@ -24,7 +26,7 @@ export const decisionTemplates: DecisionTemplate[] = [
   },
   {
     id: 'product',
-    icon: '💻',
+    icon: Laptop,
     title: '제품 비교',
     description: '여러 제품의 가격과 성능 비교',
     criteria: [
@@ -37,7 +39,7 @@ export const decisionTemplates: DecisionTemplate[] = [
   },
   {
     id: 'career',
-    icon: '🎯',
+    icon: BriefcaseBusiness,
     title: '진로 및 목표 선택',
     description: '진로, 직무, 학습 목표 등 장기적인 선택',
     criteria: [
@@ -50,7 +52,7 @@ export const decisionTemplates: DecisionTemplate[] = [
   },
   {
     id: 'everyday',
-    icon: '🏠',
+    icon: House,
     title: '생활 속 선택',
     description: '일상에서 마주하는 다양한 선택 비교',
     criteria: [

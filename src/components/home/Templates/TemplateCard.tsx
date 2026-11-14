@@ -1,9 +1,9 @@
-import { ArrowUpRight } from 'lucide-react';
+import { ArrowUpRight, type LucideIcon } from 'lucide-react';
 import './TemplateCard.css';
 
 interface TemplateCardProps {
     id: string;
-    icon: string;
+    icon: LucideIcon;
     title: string;
     description: string;
     criteriaCount: number;
@@ -16,12 +16,14 @@ const TemplateCard = ({
     description,
     criteriaCount,
 }: TemplateCardProps) => {
+    const Icon = icon;
+
     return (
         <a className="template-card" href={`/decision?template=${encodeURIComponent(id)}`}>
 
             <div className="template-card-top">
                 <span className="template-card-icon">
-                    {icon}
+                    <Icon aria-hidden="true" strokeWidth={1.5} />
                 </span>
 
                 <span className="template-card-arrow" aria-hidden="true">
