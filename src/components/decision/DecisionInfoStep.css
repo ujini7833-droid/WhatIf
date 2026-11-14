@@ -24,16 +24,6 @@
   margin: 0 0 12px;
 }
 
-.decision-info-eyebrow::before {
-  width: 6px;
-  height: 6px;
-  flex: 0 0 6px;
-  background: #20e0d0;
-  border-radius: 50%;
-  box-shadow: 0 0 10px rgba(32, 224, 208, 0.65);
-  content: '';
-}
-
 .decision-info-description {
   margin: 8px 0 24px 0;
   color: #a3a7bd;
