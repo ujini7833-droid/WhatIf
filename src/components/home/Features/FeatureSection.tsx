@@ -31,9 +31,9 @@ const FeatureSection = () => {
         <section className="feature-section">
             <div className="feature-section-header">
 
-                <h2 className="feature-section-title">
+                <p className="feature-section-title">
                     Why WhatIf
-                </h2>
+                </p>
             </div>
 
             <div className="feature-section-list">

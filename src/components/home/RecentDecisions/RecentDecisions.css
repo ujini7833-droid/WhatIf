@@ -13,6 +13,7 @@
     margin-bottom: 40px;
 }
 
+/* 미사용: 현재 RecentDecisions에서 eyebrow를 렌더링하지 않음.
 .recent-decisions-eyebrow {
     margin: 0 0 8px;
     font-family: 'Pretendard-Medium', sans-serif;
@@ -20,7 +21,7 @@
     font-size: 12px;
     font-weight: 600;
     letter-spacing: 0.1em;
-}
+} */
 
 .recent-decisions-title {
     margin: 0;

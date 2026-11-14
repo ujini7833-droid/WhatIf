@@ -106,7 +106,6 @@ const DashboardPage = () => {
       <main className="dashboard-page">
         <section className="dashboard-page-header">
           <div>
-            <p className="dashboard-eyebrow">YOUR WORKSPACE</p>
             <p className="dashboard-title">Dashboard</p>
             <p className="dashboard-description">
               지금까지의 고민과 선택을 확인해보세요.

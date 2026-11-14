@@ -77,6 +77,7 @@
 
 /* 작은 상단 문구 */
 
+/* 미사용: 현재 Hero에서 eyebrow를 렌더링하지 않음.
 .hero-eyebrow {
     margin: 0 0 24px;
 
@@ -88,7 +89,7 @@
     letter-spacing: 0.1em;
 
     color: #a98cff;
-}
+} */
 
 
 /* 메인 제목 */
@@ -106,6 +107,7 @@
     color: #f5f3ff;
 }
 
+/* 미사용: 현재 Hero 제목에서 emphasis 클래스를 사용하지 않음.
 .hero-title-emphasis {
     background: linear-gradient(
         90deg,
@@ -118,7 +120,7 @@
     -webkit-background-clip: text;
 
     color: transparent;
-}
+} */
 
 
 /* 설명 */
@@ -149,10 +151,10 @@
     margin-top: 60px;
     padding: 12px 22px;
 
-    border: 1px solid rgba(166, 111, 255, 0.7);
+    border: 1px solid rgba(184, 154, 255, 0.45);
     border-radius: 12px;
 
-    background-color:rgba(155, 92, 255, 0.95);
+    background-color: #8055e8;
 
     color: #ffffff;
 
@@ -163,7 +165,7 @@
     cursor: pointer;
 
     box-shadow:
-        0 0 25px rgba(155, 92, 255, 0.25);
+        0 0 25px rgba(128, 85, 232, 0.22);
 
     transition:
         transform 0.2s ease,
@@ -174,7 +176,7 @@
     transform: translateY(-2px);
 
     box-shadow:
-        0 0 40px rgba(155, 92, 255, 0.45);
+        0 0 40px rgba(128, 85, 232, 0.38);
 }
 
 .hero-button > span:first-child {
@@ -278,24 +280,26 @@
         margin-top: 70px;
     }
 
+    /* 미사용: 현재 Hero에서 scroll indicator를 렌더링하지 않음.
     .hero-scroll {
         display: none;
-    }
+    } */
 }
 
 @media (max-width: 480px) {
-    .hero-title-phrase,
+    /* 미사용: 현재 Hero 제목에서 emphasis 클래스를 사용하지 않음.
     .hero-title-emphasis {
         display: inline-block;
-    }
+    } */
 
     .hero-title-phrase {
         transform: translateY(-0.06em);
     }
 
+    /* 미사용: 현재 Hero 제목에서 emphasis 클래스를 사용하지 않음.
     .hero-title-emphasis {
         transform: translateY(0.08em);
-    }
+    } */
 }
 
 @container (min-width: 440px) {
