@@ -6,7 +6,7 @@
     font-family: 'Pretendard-Regular', sans-serif;
 }
 
-/* 상단 정보 */
+/* 미사용: 진행 단계 상단 정보 영역이 현재 렌더링되지 않음.
 .decision-progress-header {
     display: flex;
     align-items: center;
@@ -20,13 +20,14 @@
     font-size: 12px;
     font-weight: 600;
     letter-spacing: 0.09em;
+    margin-left: 18px;
 }
 
 .decision-progress-count {
     color: #8589a3;
     font-size: 13px;
     font-weight: 500;
-}
+} */
 
 /* 진행 단계 */
 .decision-progress-track {
@@ -127,9 +128,10 @@
 
 /* 모바일 */
 @media (max-width: 600px) {
+    /* 미사용: 진행 단계 상단 정보 영역이 현재 렌더링되지 않음.
     .decision-progress-header {
         margin-bottom: 22px;
-    }
+    } */
 
     .decision-progress-circle {
         width: 34px;

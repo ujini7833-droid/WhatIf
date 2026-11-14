@@ -312,7 +312,7 @@
   color: #fff;
   font-family: 'Pretendard-Medium', sans-serif;
   font-size: 14px;
-  background: linear-gradient(135deg, #9b5cff, #5865ff);
+  background: #8055e8;
   border: 0;
   border-radius: 10px;
   cursor: pointer;
@@ -354,7 +354,7 @@
   color: #fff;
   font-family: 'Pretendard-SemiBold', sans-serif;
   font-size: 14px;
-  background: linear-gradient(135deg, #9b5cff, #5865ff);
+  background: #8055e8;
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 12px;
   box-shadow: 0 8px 24px rgba(112, 82, 255, 0.2);
@@ -426,7 +426,7 @@
   padding: 0 16px;
   color: #fff;
   text-decoration: none;
-  background: linear-gradient(135deg, #9b5cff, #5865ff);
+  background: #8055e8;
   border-radius: 10px;
 }
 

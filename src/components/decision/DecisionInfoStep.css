@@ -10,15 +10,18 @@
 .decision-info-eyebrow {
   display: inline-flex;
   align-items: center;
-  padding: 7px 11px;
-  color: #20e0d0;
-  font-family: 'Pretendard-SemiBold', sans-serif;
+  gap: 8px;
+  padding: 7px 12px;
+  color: #b8fff8;
+  font-family: 'Pretendard-Medium', sans-serif;
   font-size: 11px;
   font-weight: 600;
-  letter-spacing: 0.09em;
-  background: rgba(155, 92, 255, 0.1);
-  border: 1px solid rgba(155, 92, 255, 0.2);
-  border-radius: 7px;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  background: rgba(32, 224, 208, 0.08);
+  border: 1px solid rgba(32, 224, 208, 0.2);
+  border-radius: 999px;
+  margin: 0 0 12px;
 }
 
 .decision-info-description {

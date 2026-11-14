@@ -25,7 +25,7 @@ const DecisionPreview = () => {
                 <div className="decision-preview-header">
                     <div>
                         <span className="decision-preview-label">
-                            YOUR DECISION
+                            최근 결정
                         </span>
 
                         <h2>{decision.title}</h2>

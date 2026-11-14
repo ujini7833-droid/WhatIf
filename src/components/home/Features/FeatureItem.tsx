@@ -1,7 +1,8 @@
+import type { LucideIcon } from 'lucide-react';
 import './FeatureItem.css';
 
 interface FeatureItemProps {
-    icon: string;
+    icon: LucideIcon;
     title: string;
     description: string;
 }
@@ -11,10 +12,12 @@ const FeatureItem = ({
     title,
     description,
 }: FeatureItemProps) => {
+    const Icon = icon;
+
     return (
         <article className="feature-item">
             <div className="feature-item-icon">
-                {icon}
+                <Icon aria-hidden="true" strokeWidth={1.5} />
             </div>
 
             <div className="feature-item-content">

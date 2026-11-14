@@ -98,9 +98,6 @@ const RecentDecisions = () => {
         <section className="recent-decisions" id="decisions">
             <div className="recent-decisions-header">
                 <div>
-                    <p className="recent-decisions-eyebrow">
-                        YOUR WORKSPACE
-                    </p>
 
                     <h2 className="recent-decisions-title">
                         Recent Decisions

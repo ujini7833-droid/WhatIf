@@ -39,10 +39,11 @@
     font-size: 14px;
 }
 
+/* 미사용: Dashboard에 생성 버튼이 현재 렌더링되지 않음.
 .dashboard-create-button:hover {
     transform: translateY(-2px);
     box-shadow: 0 8px 24px rgba(155, 92, 255, 0.25);
-}
+} */
 
 /* 통계 */
 
@@ -119,6 +120,7 @@
 
 /* 결정 목록 */
 
+/* 미사용: 결정 목록 제목 영역이 현재 렌더링되지 않음.
 .dashboard-list-heading h3 {
     margin: 0;
     font-family: 'Pretendard-SemiBold', sans-serif;
@@ -130,7 +132,7 @@
     margin: 8px 0 0;
     color: #8589a3;
     font-size: 13px;
-}
+} */
 
 /* 필터 및 정렬 */
 
@@ -268,9 +270,10 @@
         margin-bottom: 28px;
     }
 
+    /* 미사용: Dashboard에 생성 버튼이 현재 렌더링되지 않음.
     .dashboard-create-button {
         width: 100%;
-    }
+    } */
 
     .dashboard-stats {
         gap: 10px;
@@ -291,9 +294,10 @@
         font-size: 24px;
     }
 
+    /* 미사용: 결정 목록 제목 영역이 현재 렌더링되지 않음.
     .dashboard-list-heading {
         align-items: flex-start;
-    }
+    } */
 
     .dashboard-toolbar {
         align-items: flex-start;

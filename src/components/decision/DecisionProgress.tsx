@@ -9,10 +9,6 @@ const steps = ['결정 상황', '선택지', '평가 기준', '가중치', '점�
 
 const DecisionProgress = ({ currentStep }: DecisionProgressProps) => (
   <div className="decision-progress">
-    <div className="decision-progress-header">
-      <span className="decision-progress-label">CREATE DECISION</span>
-      <span className="decision-progress-count">STEP {currentStep} / {steps.length}</span>
-    </div>
 
     <div className="decision-progress-track">
       {steps.map((step, index) => {

@@ -7,12 +7,8 @@ const TemplateSection = () => {
         <section className="template-section" id="templates">
             <div className="template-section-header">
                 <div>
-                    <p className="template-section-eyebrow">
-                        START WITH A TEMPLATE
-                    </p>
-
                     <h2 className="template-section-title">
-                        Not sure where to start?
+                        Templates
                     </h2>
 
                     <p className="template-section-description">

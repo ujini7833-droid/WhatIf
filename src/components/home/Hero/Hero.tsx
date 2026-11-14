@@ -9,14 +9,11 @@ const Hero = () => (
     </div>
 
     <div className="hero-content">
-      <p className="hero-eyebrow">MAKE A BETTER DECISION</p>
-
       <h1 className="hero-title">
         WHAT IF
         <br />
         <span className="hero-title-second-line">
-          <span className="hero-title-phrase">you chose</span>{' '}
-          <span className="hero-title-emphasis">differently?</span>
+          <span className="hero-title-phrase">you chose differently?</span>
         </span>
       </h1>
 

@@ -1,7 +1,7 @@
 .decision-page {
   width: min(100% - 40px, 900px);
   margin: 0 auto;
-  padding: 120px 0 72px;
+  padding: 120px 0 100px;
 }
 
 .decision-form-card {
@@ -84,7 +84,7 @@
 }
 
 .decision-next-button {
-  background: linear-gradient(135deg, #9b5cff, #5865ff);
+  background: #8055e8;
 }
 
 .decision-form-actions button:disabled {
@@ -100,7 +100,7 @@
 @media (max-width: 600px) {
   .decision-page {
     width: min(100% - 32px, 900px);
-    padding: 100px 0 40px;
+    padding: 100px 0 68px;
   }
 
   .decision-form-card {
